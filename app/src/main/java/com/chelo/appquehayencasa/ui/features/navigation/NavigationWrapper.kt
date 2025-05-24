@@ -5,6 +5,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.chelo.appquehayencasa.ui.features.loginscreen.LoginScreen
+import com.chelo.appquehayencasa.ui.features.mainscreen.MainScreen
 import com.chelo.appquehayencasa.ui.features.onboardingscreen.OnboardingScreen
 import com.chelo.appquehayencasa.ui.features.splashscreen.SplashScreenApp
 
@@ -19,10 +20,13 @@ fun NavigationWrapper(){
 
         }
         composable (LoginScreen.route) {
-            LoginScreen()
+            LoginScreen(navController)
         }
         composable(OnboardingScreen.route){
-            OnboardingScreen()
+            OnboardingScreen(navController)
+        }
+        composable(MainScreen.route) {
+            MainScreen()
         }
     }
 }

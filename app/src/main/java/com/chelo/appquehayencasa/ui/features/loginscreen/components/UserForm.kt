@@ -19,7 +19,12 @@ import com.chelo.appquehayencasa.ui.theme.ButtonColor
 import com.chelo.appquehayencasa.ui.theme.ColorText
 
 @Composable
-fun UserForm(name: String, modifier: Modifier = Modifier, onValueChange: (String) -> Unit) {
+fun UserForm(
+    name: String,
+    modifier: Modifier = Modifier,
+    onValueChange: (String) -> Unit,
+    onClickButton: () -> Unit,
+) {
 
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Text(
@@ -30,7 +35,7 @@ fun UserForm(name: String, modifier: Modifier = Modifier, onValueChange: (String
             modifier = Modifier.padding(16.dp)
         )
         OutlinedTextField(
-            modifier= Modifier.padding(16.dp),
+            modifier = Modifier.padding(16.dp),
             value = name,
             onValueChange = { onValueChange(it) },
             placeholder = { Text("Nombre de usuario") },
@@ -44,7 +49,8 @@ fun UserForm(name: String, modifier: Modifier = Modifier, onValueChange: (String
         Button(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding( horizontal = 60.dp, vertical = 16.dp), onClick = { println("") },
+                .padding(horizontal = 60.dp, vertical = 16.dp),
+            onClick = onClickButton,
             colors = ButtonDefaults.buttonColors(
                 contentColor = ColorText,
                 containerColor = ButtonColor

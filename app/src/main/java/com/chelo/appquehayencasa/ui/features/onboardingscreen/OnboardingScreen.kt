@@ -29,6 +29,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import com.chelo.appquehayencasa.ui.features.navigation.LoginScreen
 import com.chelo.appquehayencasa.ui.theme.BackgroundColor
 import com.chelo.appquehayencasa.ui.theme.ButtonColor
 import com.chelo.appquehayencasa.ui.theme.CircleSuspend
@@ -36,9 +38,8 @@ import com.chelo.appquehayencasa.ui.theme.ColorText
 import com.chelo.appquehayencasa.ui.theme.SubcolorText
 
 
-@Preview
 @Composable
-fun OnboardingScreen() {
+fun OnboardingScreen(navController : NavController  ) {
     val state = rememberPagerState { pages.size }
 
     HorizontalPager(state) {
@@ -104,7 +105,7 @@ fun OnboardingScreen() {
                 }
                 if (state.currentPage == pages.size - 1) {
                     Button(
-                        onClick = { print("") },
+                        onClick = { navController.navigate(LoginScreen.route) },
                         modifier = Modifier.padding(16.dp),
                         colors = ButtonDefaults.buttonColors(
                             containerColor = ButtonColor,

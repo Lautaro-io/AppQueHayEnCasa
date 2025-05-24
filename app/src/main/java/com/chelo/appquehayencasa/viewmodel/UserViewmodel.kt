@@ -12,15 +12,15 @@ import javax.inject.Inject
 @HiltViewModel
 class UserViewmodel @Inject constructor(val repo: UserRepository) : ViewModel() {
 
-    suspend fun insertUser(user: UserEntity) {
-        viewModelScope.launch {
-            repo.insertUser(user)
-        }
-    }
-
     fun deleteUser(user: UserEntity) {
         viewModelScope.launch {
             repo.deleteUser(user)
+        }
+    }
+
+    fun insertUser(user: UserEntity) {
+        viewModelScope.launch {
+            repo.insertUser(user)
         }
     }
 }
