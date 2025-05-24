@@ -1,0 +1,24 @@
+package com.chelo.appquehayencasa.ui.features.mainscreen.components
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import com.chelo.appquehayencasa.ui.features.models.categories
+import com.chelo.appquehayencasa.ui.theme.Transparent
+
+@Composable
+fun ProductCategory() {
+    LazyRow (Modifier.background(Transparent).padding(vertical = 15.dp , horizontal = 30.dp)){
+        itemsIndexed(categories) { index, item ->
+            CategoryItem(item)
+        }
+    }
+}

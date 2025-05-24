@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.FloatingActionButton
@@ -18,6 +19,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.chelo.appquehayencasa.R
+import com.chelo.appquehayencasa.ui.features.mainscreen.components.ProductCategory
 import com.chelo.appquehayencasa.ui.features.mainscreen.components.TitleSection
 import com.chelo.appquehayencasa.ui.theme.BackgroundColor
 import com.chelo.appquehayencasa.ui.theme.ButtonColor
@@ -39,7 +41,11 @@ fun MainScreen() {
                     containerColor = ButtonColor,
                     contentColor = ColorText
                 ) {
-                    Image(painterResource(R.drawable.cocinero), contentDescription = "")
+                    Image(
+                        painterResource(R.drawable.cocinero),
+                        contentDescription = "",
+                        modifier = Modifier.padding(4.dp)
+                    )
                 }
                 FloatingActionButton(
                     onClick = { print("") },
@@ -57,12 +63,15 @@ fun MainScreen() {
     ) {
         Column(
             modifier = Modifier
-                .padding(it)
+                .padding()
                 .fillMaxSize()
                 .background(BackgroundColor)
         ) {
-            TitleSection("Productos en la casa", modifier = Modifier.padding(vertical = 30.dp , horizontal = 8.dp))
-
+            TitleSection(
+                "Productos en la casa"
+            )
+            ProductCategory()
         }
+        Text("", Modifier.padding(it))
     }
 }
