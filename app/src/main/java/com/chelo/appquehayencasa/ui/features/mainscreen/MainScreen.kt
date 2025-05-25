@@ -18,23 +18,24 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.chelo.appquehayencasa.R
 import com.chelo.appquehayencasa.ui.features.mainscreen.components.ProductCategory
 import com.chelo.appquehayencasa.ui.features.mainscreen.components.TitleSection
+import com.chelo.appquehayencasa.ui.features.navigation.CameraScreen
 import com.chelo.appquehayencasa.ui.theme.BackgroundColor
 import com.chelo.appquehayencasa.ui.theme.ButtonColor
 import com.chelo.appquehayencasa.ui.theme.ColorText
 
 
-@Preview
 @Composable
-fun MainScreen() {
+fun MainScreen(navController: NavController) {
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         floatingActionButton = {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 FloatingActionButton(
-                    onClick = { print("") },
+                    onClick = { navController.navigate(CameraScreen.route) },
                     modifier = Modifier
                         .padding(horizontal = 15.dp)
                         .size(40.dp),
@@ -63,7 +64,7 @@ fun MainScreen() {
     ) {
         Column(
             modifier = Modifier
-                .padding()
+                .padding(it)
                 .fillMaxSize()
                 .background(BackgroundColor)
         ) {

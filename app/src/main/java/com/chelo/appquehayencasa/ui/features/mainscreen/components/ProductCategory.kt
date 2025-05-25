@@ -1,6 +1,7 @@
 package com.chelo.appquehayencasa.ui.features.mainscreen.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -16,7 +17,12 @@ import com.chelo.appquehayencasa.ui.theme.Transparent
 
 @Composable
 fun ProductCategory() {
-    LazyRow (Modifier.background(Transparent).padding(vertical = 15.dp , horizontal = 30.dp)){
+    LazyRow(
+        Modifier
+            .background(Transparent)
+            .fillMaxWidth()
+            .padding(top = 15.dp, bottom = 15.dp, start = 25.dp)
+    ) {
         itemsIndexed(categories) { index, item ->
             CategoryItem(item)
         }

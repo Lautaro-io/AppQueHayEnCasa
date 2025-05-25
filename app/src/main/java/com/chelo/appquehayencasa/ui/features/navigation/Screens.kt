@@ -14,3 +14,8 @@ object OnboardingScreen{
 object MainScreen{
     val route = "mainscreen"
 }
+
+
+object CameraScreen{
+    val route = "camerascreen"
+}
