@@ -23,6 +23,7 @@ import com.chelo.appquehayencasa.R
 import com.chelo.appquehayencasa.ui.features.mainscreen.components.ProductCategory
 import com.chelo.appquehayencasa.ui.features.mainscreen.components.TitleSection
 import com.chelo.appquehayencasa.ui.features.navigation.CameraScreen
+import com.chelo.appquehayencasa.ui.features.navigation.ProductForm
 import com.chelo.appquehayencasa.ui.theme.BackgroundColor
 import com.chelo.appquehayencasa.ui.theme.ButtonColor
 import com.chelo.appquehayencasa.ui.theme.ColorText
@@ -49,7 +50,7 @@ fun MainScreen(navController: NavController) {
                     )
                 }
                 FloatingActionButton(
-                    onClick = { print("") },
+                    onClick = {navController.navigate(ProductForm.route) },
                     modifier = Modifier.padding(30.dp),
                     containerColor = ButtonColor,
                     contentColor = ColorText

@@ -19,3 +19,7 @@ object MainScreen{
 object CameraScreen{
     val route = "camerascreen"
 }
+
+object ProductForm{
+    val route = "productform"
+}

@@ -12,6 +12,8 @@ val Pink40 = Color(0xFF7D5260)
 
 
 val BackgroundColor = Color(0xFF3e4147)
+val defaulImage = Color(0xFF2B2C2D)
+
 val ButtonColor = Color(0xFFff8207)
 val ColorText = Color(0xFFfcfcfc)
 val SubcolorText = Color(0xFFb2b5b8)

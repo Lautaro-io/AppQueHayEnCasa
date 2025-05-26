@@ -1,6 +1,7 @@
 package com.chelo.appquehayencasa.ui.features
 
 import android.Manifest
+import android.net.Uri
 import android.os.Environment
 import android.util.Log
 import android.view.ViewGroup
@@ -30,6 +31,7 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation.NavController
 import com.chelo.appquehayencasa.R
 import com.chelo.appquehayencasa.ui.features.navigation.MainScreen
+import com.chelo.appquehayencasa.ui.features.navigation.ProductForm
 import com.chelo.appquehayencasa.ui.theme.ColorText
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
@@ -58,10 +60,14 @@ fun CameraScreen(navController: NavController) {
         floatingActionButton = {
             FloatingActionButton(onClick = {
                 val executor = ContextCompat.getMainExecutor(context)
-                takePicture(cameraController, executor, direction,navController)
+                takePicture(cameraController, executor, direction, navController)
             })
             {
-                Icon(painterResource(R.drawable.icon_camera), contentDescription = null, tint = ColorText)
+                Icon(
+                    painterResource(R.drawable.icon_camera),
+                    contentDescription = null,
+                    tint = ColorText
+                )
             }
         }, floatingActionButtonPosition = FabPosition.Center
     )
@@ -103,13 +109,16 @@ private fun takePicture(
     cameraController: LifecycleCameraController,
     executor: Executor,
     direction: File,
-    navController: NavController
+    navController: NavController,
 ) {
     val image = File.createTempFile("ima_", ".png", direction)
     val output = ImageCapture.OutputFileOptions.Builder(image).build()
     cameraController.takePicture(output, executor, object : ImageCapture.OnImageSavedCallback {
         override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
-            navController.navigate(MainScreen.route)
+            val encodeImage  = Uri.encode(image.absolutePath)
+            navController.navigate("${ProductForm.route}?imagePath=$encodeImage"){popUpTo(
+                MainScreen.route)}
+
         }
 
         override fun onError(exception: ImageCaptureException) {
