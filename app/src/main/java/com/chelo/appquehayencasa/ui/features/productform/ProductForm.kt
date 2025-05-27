@@ -60,7 +60,6 @@ fun ProductForm(imagePath: String, navController: NavController) {
     var category by remember { mutableStateOf("") }
     var expireDate by remember { mutableStateOf("") }
     val categories = categories
-    val imageUri = remember { mutableStateOf<File?>(null) }
 
     Scaffold() {
         Column(
@@ -175,7 +174,9 @@ fun ProductForm(imagePath: String, navController: NavController) {
                                     image = imagePath
                                 )
                             )
-                            navController.navigate(MainScreen.route)
+                            navController.navigate(MainScreen.route){
+                                popUpTo(0){inclusive = true}
+                            }
 
                             Toast.makeText(
                                 context,
