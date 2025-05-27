@@ -1,5 +1,6 @@
 package com.chelo.appquehayencasa.ui.features.productform
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -10,7 +11,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -20,7 +20,6 @@ import androidx.compose.material3.OutlinedTextFieldDefaults
 
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextFieldColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -28,25 +27,33 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.chelo.appquehayencasa.data.entities.ProductEntity
 import com.chelo.appquehayencasa.ui.features.mainscreen.components.TitleSection
 import com.chelo.appquehayencasa.ui.features.models.categories
+import com.chelo.appquehayencasa.ui.features.navigation.MainScreen
 
 import com.chelo.appquehayencasa.ui.features.productform.components.ImageContainer
 import com.chelo.appquehayencasa.ui.theme.BackgroundColor
+import com.chelo.appquehayencasa.ui.theme.BlackText
 import com.chelo.appquehayencasa.ui.theme.ButtonColor
 import com.chelo.appquehayencasa.ui.theme.ColorText
+import com.chelo.appquehayencasa.viewmodel.ProductViewmodel
 import java.io.File
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProductForm(imagePath: String, navController: NavController) {
+
+    val productViewmodel: ProductViewmodel = hiltViewModel()
+    val context = LocalContext.current
     var expanded by remember { mutableStateOf(false) }
     var name by remember { mutableStateOf("") }
     var count by remember { mutableStateOf("") }
@@ -78,7 +85,9 @@ fun ProductForm(imagePath: String, navController: NavController) {
                     placeholder = { Text("Nombre del producto") },
                     colors = OutlinedTextFieldDefaults.colors(
                         focusedContainerColor = ColorText,
-                        unfocusedContainerColor = ColorText
+                        unfocusedContainerColor = ColorText,
+                        focusedTextColor = BlackText,
+                        unfocusedTextColor = BlackText
                     ),
                     shape = RoundedCornerShape(32.dp)
                 )
@@ -89,7 +98,9 @@ fun ProductForm(imagePath: String, navController: NavController) {
                     placeholder = { Text("Cantidad") },
                     colors = OutlinedTextFieldDefaults.colors(
                         focusedContainerColor = ColorText,
-                        unfocusedContainerColor = ColorText
+                        unfocusedContainerColor = ColorText,
+                        focusedTextColor = BlackText,
+                        unfocusedTextColor = BlackText
                     ),
                     shape = RoundedCornerShape(32.dp)
                 )
@@ -111,7 +122,9 @@ fun ProductForm(imagePath: String, navController: NavController) {
                         placeholder = { Text("Categoria") },
                         colors = OutlinedTextFieldDefaults.colors(
                             focusedContainerColor = ColorText,
-                            unfocusedContainerColor = ColorText
+                            unfocusedContainerColor = ColorText,
+                            focusedTextColor = BlackText,
+                            unfocusedTextColor = BlackText
                         ),
                         shape = RoundedCornerShape(32.dp)
                     )
@@ -119,7 +132,10 @@ fun ProductForm(imagePath: String, navController: NavController) {
                         categories.forEach { categoryItem ->
                             DropdownMenuItem(
                                 text = { Text(categoryItem.name) },
-                                onClick = { category = categoryItem.name })
+                                onClick = {
+                                    category = categoryItem.name
+                                    expanded = false
+                                })
                         }
                     }
                 }
@@ -131,7 +147,9 @@ fun ProductForm(imagePath: String, navController: NavController) {
                     placeholder = { Text("Vencimiento (opcional)") },
                     colors = OutlinedTextFieldDefaults.colors(
                         focusedContainerColor = ColorText,
-                        unfocusedContainerColor = ColorText
+                        unfocusedContainerColor = ColorText,
+                        focusedTextColor = BlackText,
+                        unfocusedTextColor = BlackText
                     ),
                     shape = RoundedCornerShape(32.dp)
                 )
@@ -140,7 +158,34 @@ fun ProductForm(imagePath: String, navController: NavController) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 64.dp, vertical = 24.dp),
-                onClick = { TODO() },
+                onClick = {
+                    when {
+                        listOf(name, count, category, imagePath).any() { it.isEmpty() } ->
+                            Toast.makeText(context, "Complete todos los campos", Toast.LENGTH_SHORT)
+                                .show()
+
+                        else -> {
+                            productViewmodel.insertProduct(
+                                ProductEntity(
+                                    0,
+                                    nameProduct = name,
+                                    expireDate = expireDate,
+                                    count = count.toInt(),
+                                    category = category,
+                                    image = imagePath
+                                )
+                            )
+                            navController.navigate(MainScreen.route)
+
+                            Toast.makeText(
+                                context,
+                                "Producto agregado con exito!",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+
+                    }
+                },
                 colors = ButtonDefaults.buttonColors(
                     contentColor = ColorText,
                     containerColor = ButtonColor

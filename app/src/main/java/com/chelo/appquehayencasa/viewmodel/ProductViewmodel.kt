@@ -1,8 +1,11 @@
 package com.chelo.appquehayencasa.viewmodel
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.chelo.appquehayencasa.data.entities.ProductEntity
 import com.chelo.appquehayencasa.data.repository.ProductRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 
@@ -11,5 +14,12 @@ class ProductViewmodel @Inject constructor(val repo : ProductRepository) : ViewM
 
 
     val allProducts = repo.getAllProducts()
+
+
+    fun insertProduct(product: ProductEntity){
+        viewModelScope.launch {
+            repo.insertProduct(product)
+        }
+    }
 
 }

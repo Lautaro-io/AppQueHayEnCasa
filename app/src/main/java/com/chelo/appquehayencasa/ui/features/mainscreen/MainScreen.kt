@@ -2,35 +2,44 @@ package com.chelo.appquehayencasa.ui.features.mainscreen
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.Text
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.material3.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.chelo.appquehayencasa.R
 import com.chelo.appquehayencasa.ui.features.mainscreen.components.ProductCategory
+import com.chelo.appquehayencasa.ui.features.mainscreen.components.ProductItem
 import com.chelo.appquehayencasa.ui.features.mainscreen.components.TitleSection
 import com.chelo.appquehayencasa.ui.features.navigation.CameraScreen
 import com.chelo.appquehayencasa.ui.features.navigation.ProductForm
 import com.chelo.appquehayencasa.ui.theme.BackgroundColor
 import com.chelo.appquehayencasa.ui.theme.ButtonColor
 import com.chelo.appquehayencasa.ui.theme.ColorText
+import com.chelo.appquehayencasa.viewmodel.ProductViewmodel
 
 
 @Composable
 fun MainScreen(navController: NavController) {
+    val productViewmodel: ProductViewmodel = hiltViewModel()
+    val products = productViewmodel.allProducts.collectAsState(emptyList())
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         floatingActionButton = {
@@ -50,7 +59,7 @@ fun MainScreen(navController: NavController) {
                     )
                 }
                 FloatingActionButton(
-                    onClick = {navController.navigate(ProductForm.route) },
+                    onClick = { navController.navigate(ProductForm.route) },
                     modifier = Modifier.padding(30.dp),
                     containerColor = ButtonColor,
                     contentColor = ColorText
@@ -73,7 +82,19 @@ fun MainScreen(navController: NavController) {
                 "Productos en la casa"
             )
             ProductCategory()
+            Column(
+                modifier = Modifier.padding(it).fillMaxSize(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                LazyColumn {
+                    itemsIndexed(products.value.reversed()) { index, item ->
+                        ProductItem(item)
+                    }
+                }
+            }
+
         }
-        Text("", Modifier.padding(it))
+
+
     }
 }
