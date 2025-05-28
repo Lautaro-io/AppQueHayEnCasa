@@ -15,7 +15,7 @@ interface ProductDao {
     suspend fun insertProduct(product: ProductEntity)
 
     @Delete
-    fun deleteProduct(product: ProductEntity)
+    suspend fun deleteProduct(product: ProductEntity)
 
 
     @Query("SELECT * FROM products")

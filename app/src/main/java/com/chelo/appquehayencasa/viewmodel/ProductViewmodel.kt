@@ -22,4 +22,10 @@ class ProductViewmodel @Inject constructor(val repo : ProductRepository) : ViewM
         }
     }
 
+    fun deleteProduct(product: ProductEntity){
+        viewModelScope.launch {
+            repo.deleteProduct(product)
+        }
+    }
+
 }

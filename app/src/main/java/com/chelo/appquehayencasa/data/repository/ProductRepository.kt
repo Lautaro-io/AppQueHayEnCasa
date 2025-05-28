@@ -8,7 +8,7 @@ class ProductRepository @Inject constructor(val dao: ProductDao) {
 
     suspend fun insertProduct(product: ProductEntity) = dao.insertProduct(product)
 
-    fun deleteProduct(product: ProductEntity) = dao.deleteProduct(product)
+    suspend fun deleteProduct(product: ProductEntity) = dao.deleteProduct(product)
 
     fun getAllProducts() = dao.getAllProducts()
 
