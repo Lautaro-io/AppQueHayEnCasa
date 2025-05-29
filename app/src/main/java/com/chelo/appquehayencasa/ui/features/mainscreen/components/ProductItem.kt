@@ -14,6 +14,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -55,6 +56,7 @@ fun ProductItem(product: ProductEntity, modifier: Modifier = Modifier, onDeleteB
             .padding(16.dp)
             .fillMaxWidth(),
         border = BorderStroke(1.dp, border),
+        colors = CardDefaults.cardColors(containerColor = BackgroundColor),
         onClick = { expanded = !expanded }
     ) {
         Box(modifier = modifier.fillMaxWidth()) {

@@ -6,17 +6,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.chelo.appquehayencasa.ui.features.models.categories
 import com.chelo.appquehayencasa.ui.theme.Transparent
 
 @Composable
-fun ProductCategory() {
+fun ProductCategory(onItemSelected: (String) -> Unit) {
     LazyRow(
         Modifier
             .background(Transparent)
@@ -24,7 +20,9 @@ fun ProductCategory() {
             .padding(top = 15.dp, bottom = 15.dp, start = 25.dp)
     ) {
         itemsIndexed(categories) { index, item ->
-            CategoryItem(item)
+            CategoryItem(item){
+                onItemSelected(categories[index].name)
+            }
         }
     }
 }

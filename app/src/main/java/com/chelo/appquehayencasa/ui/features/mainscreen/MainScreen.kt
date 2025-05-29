@@ -1,6 +1,5 @@
 package com.chelo.appquehayencasa.ui.features.mainscreen
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -39,13 +38,17 @@ import com.chelo.appquehayencasa.ui.theme.ColorText
 import com.chelo.appquehayencasa.viewmodel.ProductViewmodel
 
 
-
 @Composable
 fun MainScreen(navController: NavController) {
     val productViewmodel: ProductViewmodel = hiltViewModel()
-    val products = productViewmodel.allProducts.collectAsState(emptyList())
     var showDialogDelete by remember { mutableStateOf(false) }
 
+
+    var filterState by remember { mutableStateOf(false) }
+
+    var products = productViewmodel.allProducts.collectAsState(emptyList())
+    var filteredProducts = productViewmodel.filteredProducts.collectAsState()
+    val productsToShow = if (filterState) filteredProducts else products
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -88,7 +91,10 @@ fun MainScreen(navController: NavController) {
             TitleSection(
                 "Productos en la casa"
             )
-            ProductCategory()
+            ProductCategory { category ->
+                productViewmodel.filterProductsByCategory(category)
+                filterState = !filterState
+            }
             Column(
                 modifier = Modifier
                     .padding(it)
@@ -96,17 +102,15 @@ fun MainScreen(navController: NavController) {
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 LazyColumn {
-                    itemsIndexed(products.value.reversed()) { index, item ->
+                    itemsIndexed(productsToShow.value) { index, item ->
                         ProductItem(
                             item,
                             onDeleteButton = { showDialogDelete = true })
                         if (showDialogDelete)
-                            DialogDeleteProduct(onDismissClick = {showDialogDelete = false}) {
+                            DialogDeleteProduct(onDismissClick = { showDialogDelete = false }) {
                                 productViewmodel.deleteProduct(item)
                                 showDialogDelete = false
                             }
-
-
                     }
                 }
             }

@@ -5,6 +5,8 @@ import androidx.lifecycle.viewModelScope
 import com.chelo.appquehayencasa.data.entities.ProductEntity
 import com.chelo.appquehayencasa.data.repository.ProductRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -14,6 +16,9 @@ class ProductViewmodel @Inject constructor(val repo : ProductRepository) : ViewM
 
 
     val allProducts = repo.getAllProducts()
+
+    private val _filteredProducts = MutableStateFlow<List<ProductEntity>>(emptyList())
+    val filteredProducts: StateFlow<List<ProductEntity>> = _filteredProducts
 
 
     fun insertProduct(product: ProductEntity){
@@ -25,6 +30,16 @@ class ProductViewmodel @Inject constructor(val repo : ProductRepository) : ViewM
     fun deleteProduct(product: ProductEntity){
         viewModelScope.launch {
             repo.deleteProduct(product)
+        }
+    }
+
+
+    fun filterProductsByCategory(category: String){
+        viewModelScope.launch {
+            repo.getCategoryProducts(category).collect {product ->
+               _filteredProducts.value = product
+            }
+
         }
     }
 
