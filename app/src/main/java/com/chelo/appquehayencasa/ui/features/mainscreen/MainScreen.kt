@@ -92,8 +92,13 @@ fun MainScreen(navController: NavController) {
                 "Productos en la casa"
             )
             ProductCategory { category ->
-                productViewmodel.filterProductsByCategory(category)
-                filterState = !filterState
+                if (category != "Todos") {
+                    productViewmodel.filterProductsByCategory(category)
+                    filterState =
+                        true // Bug que cuando apretas de nuevo otra categoria , mecanicamente el state es false por ende muestra la lista principal
+                }else{
+                    filterState = false
+                }
             }
             Column(
                 modifier = Modifier
@@ -102,7 +107,7 @@ fun MainScreen(navController: NavController) {
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
                 LazyColumn {
-                    itemsIndexed(productsToShow.value) { index, item ->
+                    itemsIndexed(productsToShow.value.reversed()) { index, item ->
                         ProductItem(
                             item,
                             onDeleteButton = { showDialogDelete = true })
