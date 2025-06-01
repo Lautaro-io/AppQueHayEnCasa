@@ -85,7 +85,7 @@ fun ProductItem(product: ProductEntity, modifier: Modifier = Modifier, onDeleteB
                         border = BorderStroke(2.dp, border),
                         color = BackgroundColor,
                         modifier = modifier
-                            .padding(16.dp)
+                            .padding(8.dp).fillMaxWidth()
                     ) {
                         Text(
                             "Vencimiento : ${product.expireDate}",

@@ -50,6 +50,7 @@ import com.chelo.appquehayencasa.ui.theme.BackgroundColor
 import com.chelo.appquehayencasa.ui.theme.BlackText
 import com.chelo.appquehayencasa.ui.theme.ButtonColor
 import com.chelo.appquehayencasa.ui.theme.ColorText
+import com.chelo.appquehayencasa.ui.theme.SubcolorText
 import com.chelo.appquehayencasa.viewmodel.ProductViewmodel
 import java.time.Instant
 import java.time.ZoneId
@@ -68,6 +69,9 @@ fun ProductForm(imagePath: String, navController: NavController) {
     var category by remember { mutableStateOf("") }
     var expireDate by remember { mutableStateOf("") }
     val categories = categories
+
+
+
     val state = rememberDatePickerState()
     var showDateDialog by remember { mutableStateOf(false) }
     val date = state.selectedDateMillis
@@ -124,7 +128,7 @@ fun ProductForm(imagePath: String, navController: NavController) {
                     expanded,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 64.dp),
+                        .padding(horizontal = 60.dp),
                     onExpandedChange = { expanded = !expanded }) {
                     OutlinedTextField(
                         modifier = Modifier
@@ -138,7 +142,7 @@ fun ProductForm(imagePath: String, navController: NavController) {
                             focusedContainerColor = ColorText,
                             unfocusedContainerColor = ColorText,
                             focusedTextColor = BlackText,
-                            unfocusedTextColor = BlackText
+                            unfocusedTextColor = SubcolorText
                         ),
                         shape = RoundedCornerShape(32.dp)
                     )
@@ -168,7 +172,7 @@ fun ProductForm(imagePath: String, navController: NavController) {
                     ) {
 
                     Text(
-                        if (expireDate != "") expireDate else "Fecha de vencimiento(opcional)",
+                        if (expireDate != "") "Vencimiento : $expireDate" else "Fecha de vencimiento(opcional)",
                         modifier = Modifier
                             .padding(8.dp),
                         fontWeight = FontWeight.Light
