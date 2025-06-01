@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.chelo.appquehayencasa.ui.theme.BlackText
 import com.chelo.appquehayencasa.ui.theme.ButtonColor
 import com.chelo.appquehayencasa.ui.theme.ColorText
 
@@ -43,6 +44,7 @@ fun UserForm(
                 focusedBorderColor = ButtonColor,
                 unfocusedContainerColor = ColorText,
                 focusedContainerColor = ColorText
+                , focusedTextColor = BlackText
             ),
             shape = RoundedCornerShape(32.dp)
         )
