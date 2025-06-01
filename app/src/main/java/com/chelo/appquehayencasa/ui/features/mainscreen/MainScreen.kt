@@ -1,11 +1,9 @@
 package com.chelo.appquehayencasa.ui.features.mainscreen
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material.icons.Icons
@@ -21,16 +19,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.chelo.appquehayencasa.R
 import com.chelo.appquehayencasa.ui.features.mainscreen.components.DialogDeleteProduct
 import com.chelo.appquehayencasa.ui.features.mainscreen.components.ProductCategory
 import com.chelo.appquehayencasa.ui.features.mainscreen.components.ProductItem
 import com.chelo.appquehayencasa.ui.features.mainscreen.components.TitleSection
-import com.chelo.appquehayencasa.ui.features.navigation.CameraScreen
 import com.chelo.appquehayencasa.ui.features.navigation.ProductForm
 import com.chelo.appquehayencasa.ui.theme.BackgroundColor
 import com.chelo.appquehayencasa.ui.theme.ButtonColor
@@ -54,20 +49,6 @@ fun MainScreen(navController: NavController) {
         modifier = Modifier.fillMaxSize(),
         floatingActionButton = {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                FloatingActionButton(
-                    onClick = { navController.navigate(CameraScreen.route) },
-                    modifier = Modifier
-                        .padding(horizontal = 15.dp)
-                        .size(40.dp),
-                    containerColor = ButtonColor,
-                    contentColor = ColorText
-                ) {
-                    Image(
-                        painterResource(R.drawable.cocinero),
-                        contentDescription = "",
-                        modifier = Modifier.padding(4.dp)
-                    )
-                }
                 FloatingActionButton(
                     onClick = { navController.navigate(ProductForm.route) },
                     modifier = Modifier.padding(30.dp),
@@ -96,7 +77,7 @@ fun MainScreen(navController: NavController) {
                     productViewmodel.filterProductsByCategory(category)
                     filterState =
                         true // Bug que cuando apretas de nuevo otra categoria , mecanicamente el state es false por ende muestra la lista principal
-                }else{
+                } else {
                     filterState = false
                 }
             }
@@ -106,7 +87,7 @@ fun MainScreen(navController: NavController) {
                     .fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                LazyColumn {
+                LazyColumn(modifier = Modifier.padding(horizontal = 20.dp)) {
                     itemsIndexed(productsToShow.value.reversed()) { index, item ->
                         ProductItem(
                             item,

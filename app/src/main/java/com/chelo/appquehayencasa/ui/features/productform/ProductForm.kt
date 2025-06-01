@@ -1,6 +1,8 @@
 package com.chelo.appquehayencasa.ui.features.productform
 
+import android.os.Build
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -12,14 +14,18 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.DatePicker
+import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.MenuAnchorType
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -45,9 +51,11 @@ import com.chelo.appquehayencasa.ui.theme.BlackText
 import com.chelo.appquehayencasa.ui.theme.ButtonColor
 import com.chelo.appquehayencasa.ui.theme.ColorText
 import com.chelo.appquehayencasa.viewmodel.ProductViewmodel
-import java.io.File
+import java.time.Instant
+import java.time.ZoneId
 
 
+@RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProductForm(imagePath: String, navController: NavController) {
@@ -60,8 +68,15 @@ fun ProductForm(imagePath: String, navController: NavController) {
     var category by remember { mutableStateOf("") }
     var expireDate by remember { mutableStateOf("") }
     val categories = categories
+    val state = rememberDatePickerState()
+    var showDateDialog by remember { mutableStateOf(false) }
+    val date = state.selectedDateMillis
+    date?.let {
+        val localDate = Instant.ofEpochMilli(it).atZone(ZoneId.of("UTC")).toLocalDate()
+        expireDate = "${localDate.dayOfMonth}/${localDate.month}/${localDate.year}"
+    }
 
-    Scaffold() {
+    Scaffold {
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -113,9 +128,9 @@ fun ProductForm(imagePath: String, navController: NavController) {
                     onExpandedChange = { expanded = !expanded }) {
                     OutlinedTextField(
                         modifier = Modifier
-                            .menuAnchor()
+                            .menuAnchor(type = MenuAnchorType.PrimaryEditable, true)
                             .fillMaxWidth(),
-                        value = category ?: "Categoria",
+                        value = if( category!= "") category else "Categoria" ,
                         onValueChange = { },
                         readOnly = true,
                         placeholder = { Text("Categoria") },
@@ -140,18 +155,28 @@ fun ProductForm(imagePath: String, navController: NavController) {
                 }
 
 
-                OutlinedTextField(
-                    value = expireDate,
-                    onValueChange = { expireDate = it },
-                    placeholder = { Text("Vencimiento (opcional)") },
-                    colors = OutlinedTextFieldDefaults.colors(
-                        focusedContainerColor = ColorText,
-                        unfocusedContainerColor = ColorText,
-                        focusedTextColor = BlackText,
-                        unfocusedTextColor = BlackText
+                Button(
+                    onClick = { showDateDialog = true },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = ColorText,
+                        contentColor = BlackText
                     ),
-                    shape = RoundedCornerShape(32.dp)
-                )
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 64.dp),
+
+                    ) {
+
+                    Text(
+                        if (expireDate != "") expireDate else "Fecha de vencimiento(opcional)",
+                        modifier = Modifier
+                            .padding(8.dp),
+                        fontWeight = FontWeight.Light
+                    )
+
+
+                }
+
             }
             Button(
                 modifier = Modifier
@@ -159,7 +184,7 @@ fun ProductForm(imagePath: String, navController: NavController) {
                     .padding(horizontal = 64.dp, vertical = 24.dp),
                 onClick = {
                     when {
-                        listOf(name, count, category, imagePath).any() { it.isEmpty() } ->
+                        listOf(name, count, category, imagePath).any { it.isEmpty() } ->
                             Toast.makeText(context, "Complete todos los campos", Toast.LENGTH_SHORT)
                                 .show()
 
@@ -174,8 +199,8 @@ fun ProductForm(imagePath: String, navController: NavController) {
                                     image = imagePath
                                 )
                             )
-                            navController.navigate(MainScreen.route){
-                                popUpTo(0){inclusive = true}
+                            navController.navigate(MainScreen.route) {
+                                popUpTo(0) { inclusive = true }
                             }
 
                             Toast.makeText(
@@ -193,5 +218,12 @@ fun ProductForm(imagePath: String, navController: NavController) {
                 )
             ) { Text("Agregar Producto", fontWeight = FontWeight.ExtraBold, fontSize = 18.sp) }
         }
+    }
+
+    if (showDateDialog) {
+        DatePickerDialog(
+            onDismissRequest = { showDateDialog = false },
+            confirmButton = { Button(onClick = { showDateDialog = false }) { Text("Confirmar") } }
+        ) { DatePicker(state) }
     }
 }
