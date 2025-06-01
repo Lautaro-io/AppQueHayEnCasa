@@ -23,6 +23,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.chelo.appquehayencasa.ui.features.mainscreen.components.DialogDeleteProduct
+import com.chelo.appquehayencasa.ui.features.mainscreen.components.EmptyProduct
 import com.chelo.appquehayencasa.ui.features.mainscreen.components.ProductCategory
 import com.chelo.appquehayencasa.ui.features.mainscreen.components.ProductItem
 import com.chelo.appquehayencasa.ui.features.mainscreen.components.TitleSection
@@ -87,16 +88,20 @@ fun MainScreen(navController: NavController) {
                     .fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                LazyColumn(modifier = Modifier.padding(horizontal = 20.dp)) {
-                    itemsIndexed(productsToShow.value.reversed()) { index, item ->
-                        ProductItem(
-                            item,
-                            onDeleteButton = { showDialogDelete = true })
-                        if (showDialogDelete)
-                            DialogDeleteProduct(onDismissClick = { showDialogDelete = false }) {
-                                productViewmodel.deleteProduct(item)
-                                showDialogDelete = false
-                            }
+                if (productsToShow.value.isEmpty()) {
+                    EmptyProduct()
+                } else {
+                    LazyColumn(modifier = Modifier.padding(horizontal = 20.dp)) {
+                        itemsIndexed(productsToShow.value.reversed()) { index, item ->
+                            ProductItem(
+                                item,
+                                onDeleteButton = { showDialogDelete = true })
+                            if (showDialogDelete)
+                                DialogDeleteProduct(onDismissClick = { showDialogDelete = false }) {
+                                    productViewmodel.deleteProduct(item)
+                                    showDialogDelete = false
+                                }
+                        }
                     }
                 }
             }
