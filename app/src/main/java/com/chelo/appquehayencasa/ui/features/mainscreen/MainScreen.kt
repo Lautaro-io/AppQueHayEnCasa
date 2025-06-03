@@ -22,22 +22,35 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.chelo.appquehayencasa.data.entities.CategoryEntity
+import com.chelo.appquehayencasa.ui.features.mainscreen.components.CategoryDialog
 import com.chelo.appquehayencasa.ui.features.mainscreen.components.DialogDeleteProduct
 import com.chelo.appquehayencasa.ui.features.mainscreen.components.EmptyProduct
 import com.chelo.appquehayencasa.ui.features.mainscreen.components.ProductCategory
 import com.chelo.appquehayencasa.ui.features.mainscreen.components.ProductItem
 import com.chelo.appquehayencasa.ui.features.mainscreen.components.TitleSection
+import com.chelo.appquehayencasa.ui.features.models.Category
 import com.chelo.appquehayencasa.ui.features.navigation.ProductForm
 import com.chelo.appquehayencasa.ui.theme.BackgroundColor
 import com.chelo.appquehayencasa.ui.theme.ButtonColor
 import com.chelo.appquehayencasa.ui.theme.ColorText
+import com.chelo.appquehayencasa.viewmodel.CategoryViewmodel
 import com.chelo.appquehayencasa.viewmodel.ProductViewmodel
 
 
 @Composable
 fun MainScreen(navController: NavController) {
     val productViewmodel: ProductViewmodel = hiltViewModel()
+    val categoryViewmodel: CategoryViewmodel = hiltViewModel()
     var showDialogDelete by remember { mutableStateOf(false) }
+
+    val categoriesEntities by categoryViewmodel.allCategories.collectAsState(emptyList())
+    val categoryList = categoriesEntities.map {
+        Category(it.name,
+            isSelected = mutableStateOf(it.name.lowercase() == "todos"))
+    }
+
+    var showCategoryDialog by remember { mutableStateOf(false) }
 
 
     var filterState by remember { mutableStateOf(false) }
@@ -73,15 +86,21 @@ fun MainScreen(navController: NavController) {
             TitleSection(
                 "Productos en la casa"
             )
-            ProductCategory { category ->
-                if (category != "Todos") {
-                    productViewmodel.filterProductsByCategory(category)
-                    filterState =
-                        true // Bug que cuando apretas de nuevo otra categoria , mecanicamente el state es false por ende muestra la lista principal
-                } else {
-                    filterState = false
-                }
-            }
+            ProductCategory(
+                categoryList
+                ,
+                onItemSelected = { category ->
+                    if (category != "Todos") {
+                        productViewmodel.filterProductsByCategory(category)
+                        filterState =
+                            true // Bug que cuando apretas de nuevo otra categoria , mecanicamente el state es false por ende muestra la lista principal
+                    } else {
+                        filterState = false
+                    }
+                }, onAddClickButton = { showCategoryDialog = true })
+
+
+
             Column(
                 modifier = Modifier
                     .padding(it)
@@ -104,11 +123,21 @@ fun MainScreen(navController: NavController) {
                         }
                     }
                 }
+                if (showCategoryDialog) {
+                    CategoryDialog(
+                        onDismissClick = { showCategoryDialog = false },
+                        onConfirmButton = {
+                            categoryViewmodel.insertCategory(CategoryEntity(name = it))
+                            showCategoryDialog = false
+                        }
+                    )
+                }
             }
 
         }
 
 
     }
+
 
 }

@@ -2,6 +2,7 @@ package com.chelo.appquehayencasa.di
 
 import android.content.Context
 import androidx.room.Room
+import com.chelo.appquehayencasa.data.daos.CategoryDao
 import com.chelo.appquehayencasa.data.daos.ProductDao
 import com.chelo.appquehayencasa.data.daos.UserDao
 import com.chelo.appquehayencasa.data.db.AppDb
@@ -26,7 +27,7 @@ object Module {
             context,
             AppDb::class.java,
             "db_app"
-        ).build()
+        ).fallbackToDestructiveMigration().build()
     }
 
 
@@ -38,6 +39,11 @@ object Module {
     @Provides
     fun providesProductDao(db: AppDb): ProductDao {
         return db.productDao()
+    }
+
+    @Provides
+    fun providesCategoryDao(db : AppDb) : CategoryDao{
+        return db.categoryDao()
     }
 
 }

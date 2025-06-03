@@ -27,6 +27,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -42,7 +43,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.chelo.appquehayencasa.data.entities.ProductEntity
 import com.chelo.appquehayencasa.ui.features.mainscreen.components.TitleSection
-import com.chelo.appquehayencasa.ui.features.models.categories
 import com.chelo.appquehayencasa.ui.features.navigation.MainScreen
 
 import com.chelo.appquehayencasa.ui.features.productform.components.ImageContainer
@@ -51,6 +51,7 @@ import com.chelo.appquehayencasa.ui.theme.BlackText
 import com.chelo.appquehayencasa.ui.theme.ButtonColor
 import com.chelo.appquehayencasa.ui.theme.ColorText
 import com.chelo.appquehayencasa.ui.theme.SubcolorText
+import com.chelo.appquehayencasa.viewmodel.CategoryViewmodel
 import com.chelo.appquehayencasa.viewmodel.ProductViewmodel
 import java.time.Instant
 import java.time.ZoneId
@@ -62,13 +63,14 @@ import java.time.ZoneId
 fun ProductForm(imagePath: String, navController: NavController) {
 
     val productViewmodel: ProductViewmodel = hiltViewModel()
+    val categoryViewmodel: CategoryViewmodel = hiltViewModel()
     val context = LocalContext.current
     var expanded by remember { mutableStateOf(false) }
     var name by remember { mutableStateOf("") }
     var count by remember { mutableStateOf("") }
     var category by remember { mutableStateOf("") }
     var expireDate by remember { mutableStateOf("") }
-    val categories = categories
+    val categories by  categoryViewmodel.allCategories.collectAsState(emptyList())
 
 
 
