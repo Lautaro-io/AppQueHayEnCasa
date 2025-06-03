@@ -2,6 +2,7 @@ package com.chelo.appquehayencasa.ui.features.mainscreen.components
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -18,8 +19,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.chelo.appquehayencasa.ui.theme.BackgroundColor
 import com.chelo.appquehayencasa.ui.theme.BlackText
 import com.chelo.appquehayencasa.ui.theme.ButtonColor
@@ -33,15 +37,21 @@ fun CategoryDialog(
 ) {
     var name by remember { mutableStateOf("") }
     AlertDialog(
-        onDismissRequest = { onDismissClick },
+        onDismissRequest = { onDismissClick() }
     ) {
         Surface(
+            modifier = Modifier.padding(16.dp),
             shape = RoundedCornerShape(16.dp),
             tonalElevation = 8.dp,
             color = BackgroundColor,
             contentColor = ColorText
         ) {
-            Column(modifier = Modifier.padding(16.dp)) {
+            Column(
+                modifier = Modifier.padding(16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text("Agregar nueva categoria.", fontWeight = FontWeight.Light, color = ColorText , fontSize = 16.sp)
+                Spacer(modifier = Modifier.height(16.dp))
                 OutlinedTextField(
                     value = name,
                     onValueChange = { name = it },
@@ -50,7 +60,8 @@ fun CategoryDialog(
                         focusedTextColor = BlackText,
                         unfocusedContainerColor = ColorText,
                         focusedContainerColor = ColorText
-                    )
+                    ),
+                    shape = RoundedCornerShape(32.dp)
                 )
                 Spacer(modifier = Modifier.height(8.dp))
                 Button(
@@ -58,7 +69,8 @@ fun CategoryDialog(
                     colors = ButtonDefaults.buttonColors(
                         containerColor = ButtonColor,
                         contentColor = ColorText
-                    )
+                    ),
+                    modifier = Modifier.fillMaxWidth()
                 ) { Text("Agregar") }
 
             }

@@ -20,8 +20,12 @@ import com.chelo.appquehayencasa.ui.theme.ColorText
 import com.chelo.appquehayencasa.ui.theme.Transparent
 
 @Composable
-fun ProductCategory(categoryList: List<Category>, onItemSelected: (String) -> Unit, onAddClickButton:()-> Unit) {
-
+fun ProductCategory(
+    categoryList: List<Category>,
+    selectedCategory: String,
+    onItemSelected: (String) -> Unit,
+    onAddClickButton: () -> Unit,
+) {
 
     Row {
         LazyRow(
@@ -31,23 +35,15 @@ fun ProductCategory(categoryList: List<Category>, onItemSelected: (String) -> Un
                 .padding(top = 15.dp, bottom = 15.dp, start = 25.dp)
         ) {
             itemsIndexed(categoryList) { index, item ->
-                categoryList.forEach { category ->
-                    if (category.name == "Todos") {
-                        category.isSelected.value = true
-                    }
-                }
-                CategoryItem(item) {
-                    categoryList.forEach {
-                        it.isSelected.value = false
-                    }
-                    categoryList[index].isSelected.value = true
+                var isSelected = item.name == selectedCategory
+                CategoryItem(item, isSelected) {
                     onItemSelected(categoryList[index].name)
                 }
 
             }
             item {
                 OutlinedButton(
-                    onClick = { onAddClickButton()},
+                    onClick = { onAddClickButton() },
                     colors = ButtonDefaults.buttonColors(
                         contentColor = ColorText,
                         containerColor = Transparent

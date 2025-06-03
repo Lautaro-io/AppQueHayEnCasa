@@ -38,6 +38,7 @@ import com.chelo.appquehayencasa.ui.theme.BackgroundColor
 import com.chelo.appquehayencasa.ui.theme.ButtonColor
 import com.chelo.appquehayencasa.ui.theme.CleanCategory
 import com.chelo.appquehayencasa.ui.theme.ColorText
+import com.chelo.appquehayencasa.ui.theme.DefaultCategory
 import com.chelo.appquehayencasa.ui.theme.MeatCategory
 import java.io.File
 
@@ -49,7 +50,8 @@ fun ProductItem(product: ProductEntity, modifier: Modifier = Modifier, onDeleteB
         "Almacen" -> AlmacenCategory
         "Limpieza" -> CleanCategory
         "Heladera" -> MeatCategory
-        else -> AllCategory
+        "Todos" -> AllCategory
+        else -> DefaultCategory
     }
     Card(
         modifier = Modifier

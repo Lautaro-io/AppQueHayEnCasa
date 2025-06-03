@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -25,7 +26,11 @@ fun EmptyProduct(modifier: Modifier = Modifier) {
             verticalArrangement = Arrangement.Center,
             modifier = modifier.fillMaxSize()
         ) {
-            Image(painterResource(R.drawable.empty), contentDescription = "Empty product")
+            Image(
+                painterResource(R.drawable.carrito),
+                modifier = Modifier.size(60.dp),
+                contentDescription = "Empty product"
+            )
             Spacer(modifier.height(16.dp))
             Text("No hay productos aun.", color = ColorText, fontWeight = FontWeight.ExtraBold)
 

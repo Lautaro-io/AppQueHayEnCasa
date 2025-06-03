@@ -16,7 +16,9 @@ class CategoryViewmodel @Inject constructor(private val repo : CategoryRepositor
     init {
         viewModelScope.launch {
             val firtsCategories = repo.getAllCategories().first()
+
             if (firtsCategories.isEmpty()){
+                repo.insertCategory(CategoryEntity(name = "Todos" ))
                 repo.insertCategory(CategoryEntity(name = "Almacen"))
                 repo.insertCategory(CategoryEntity(name = "Limpieza"))
                 repo.insertCategory(CategoryEntity(name = "Heladera"))

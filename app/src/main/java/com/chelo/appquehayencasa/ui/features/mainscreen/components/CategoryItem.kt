@@ -12,28 +12,41 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.chelo.appquehayencasa.ui.features.models.Category
+import com.chelo.appquehayencasa.ui.theme.AllCategory
+import com.chelo.appquehayencasa.ui.theme.AlmacenCategory
+import com.chelo.appquehayencasa.ui.theme.BlackText
+import com.chelo.appquehayencasa.ui.theme.CleanCategory
 import com.chelo.appquehayencasa.ui.theme.ColorText
+import com.chelo.appquehayencasa.ui.theme.DefaultCategory
+import com.chelo.appquehayencasa.ui.theme.MeatCategory
 import com.chelo.appquehayencasa.ui.theme.Transparent
 
 
 @Composable
-fun CategoryItem(category: Category, onClick: () -> Unit) {
+fun CategoryItem(category: Category, isSelected: Boolean, onClick: () -> Unit) {
 
-    val bg = if(category.isSelected.value)category.color else Transparent
-
+    val bgSelected = when (category.name) {
+        "Almacen" -> AlmacenCategory
+        "Limpieza" -> CleanCategory
+        "Heladera" -> MeatCategory
+        "Todos" -> AllCategory
+        else -> DefaultCategory
+    }
     OutlinedButton(
         onClick = {
             onClick()
         },
         colors = ButtonDefaults.buttonColors(
             contentColor = ColorText,
-            containerColor = bg
+            containerColor = if (isSelected) bgSelected else Transparent
         ),
-        border = BorderStroke(1.dp, category.color),
+        border = BorderStroke(
+            1.dp,bgSelected
+        ),
         modifier = Modifier.padding(horizontal = 4.dp)
     ) {
-        Text(category.name)
-        if (category.isSelected.value && category.name != "Todos")
-            Icon(Icons.Default.Close, contentDescription = null)
+        Text(category.name, color =if (bgSelected == DefaultCategory && isSelected ) BlackText else ColorText)
+        if (isSelected && category.name != "Todos")
+            Icon(Icons.Default.Close, contentDescription = null, tint = BlackText)
     }
 }

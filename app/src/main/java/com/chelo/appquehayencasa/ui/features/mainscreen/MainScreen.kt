@@ -31,6 +31,7 @@ import com.chelo.appquehayencasa.ui.features.mainscreen.components.ProductItem
 import com.chelo.appquehayencasa.ui.features.mainscreen.components.TitleSection
 import com.chelo.appquehayencasa.ui.features.models.Category
 import com.chelo.appquehayencasa.ui.features.navigation.ProductForm
+import com.chelo.appquehayencasa.ui.theme.AllCategory
 import com.chelo.appquehayencasa.ui.theme.BackgroundColor
 import com.chelo.appquehayencasa.ui.theme.ButtonColor
 import com.chelo.appquehayencasa.ui.theme.ColorText
@@ -47,11 +48,11 @@ fun MainScreen(navController: NavController) {
     val categoriesEntities by categoryViewmodel.allCategories.collectAsState(emptyList())
     val categoryList = categoriesEntities.map {
         Category(it.name,
-            isSelected = mutableStateOf(it.name.lowercase() == "todos"))
+            color = if(it.name.lowercase() == "todos") AllCategory else ColorText)
     }
-
     var showCategoryDialog by remember { mutableStateOf(false) }
 
+    var selectedCategory by remember { mutableStateOf("Todos") }
 
     var filterState by remember { mutableStateOf(false) }
 
@@ -89,7 +90,9 @@ fun MainScreen(navController: NavController) {
             ProductCategory(
                 categoryList
                 ,
+                selectedCategory = selectedCategory,
                 onItemSelected = { category ->
+                    selectedCategory = category
                     if (category != "Todos") {
                         productViewmodel.filterProductsByCategory(category)
                         filterState =
