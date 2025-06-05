@@ -13,6 +13,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.chelo.appquehayencasa.ui.features.models.Category
@@ -25,6 +26,7 @@ fun ProductCategory(
     selectedCategory: String,
     onItemSelected: (String) -> Unit,
     onAddClickButton: () -> Unit,
+    onLongPressed: (String) -> Unit,
 ) {
 
     Row {
@@ -32,13 +34,18 @@ fun ProductCategory(
             Modifier
                 .background(Transparent)
                 .fillMaxWidth()
-                .padding(top = 15.dp, bottom = 15.dp, start = 25.dp)
+                .padding(top = 15.dp, bottom = 15.dp, start = 25.dp),
+            verticalAlignment = Alignment.CenterVertically
         ) {
             itemsIndexed(categoryList) { index, item ->
                 var isSelected = item.name == selectedCategory
-                CategoryItem(item, isSelected) {
-                    onItemSelected(categoryList[index].name)
-                }
+                CategoryItem(
+                    item,
+                    isSelected,
+                    onClick = { onItemSelected(categoryList[index].name) },
+                    onLongPressed = {
+                        onLongPressed(item.name)
+                    })
 
             }
             item {

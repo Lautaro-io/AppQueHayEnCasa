@@ -1,5 +1,6 @@
 package com.chelo.appquehayencasa.ui.features.mainscreen
 
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -19,11 +20,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.chelo.appquehayencasa.data.entities.CategoryEntity
 import com.chelo.appquehayencasa.ui.features.mainscreen.components.CategoryDialog
+import com.chelo.appquehayencasa.ui.features.mainscreen.components.DialogDeleteDialog
 import com.chelo.appquehayencasa.ui.features.mainscreen.components.DialogDeleteProduct
 import com.chelo.appquehayencasa.ui.features.mainscreen.components.EmptyProduct
 import com.chelo.appquehayencasa.ui.features.mainscreen.components.ProductCategory
@@ -41,14 +44,19 @@ import com.chelo.appquehayencasa.viewmodel.ProductViewmodel
 
 @Composable
 fun MainScreen(navController: NavController) {
+    val context = LocalContext.current
+
     val productViewmodel: ProductViewmodel = hiltViewModel()
     val categoryViewmodel: CategoryViewmodel = hiltViewModel()
     var showDialogDelete by remember { mutableStateOf(false) }
+    var showDialogDeleteCategory by remember { mutableStateOf(false) }
 
     val categoriesEntities by categoryViewmodel.allCategories.collectAsState(emptyList())
     val categoryList = categoriesEntities.map {
-        Category(it.name,
-            color = if(it.name.lowercase() == "todos") AllCategory else ColorText)
+        Category(
+            it.name,
+            color = if (it.name.lowercase() == "todos") AllCategory else ColorText
+        )
     }
     var showCategoryDialog by remember { mutableStateOf(false) }
 
@@ -88,8 +96,7 @@ fun MainScreen(navController: NavController) {
                 "Productos en la casa"
             )
             ProductCategory(
-                categoryList
-                ,
+                categoryList,
                 selectedCategory = selectedCategory,
                 onItemSelected = { category ->
                     selectedCategory = category
@@ -100,7 +107,16 @@ fun MainScreen(navController: NavController) {
                     } else {
                         filterState = false
                     }
-                }, onAddClickButton = { showCategoryDialog = true })
+                }, onAddClickButton = { showCategoryDialog = true },
+                onLongPressed = {
+                    if (it == "Todos"){
+                        Toast.makeText(context, "No se puede eliminar esta categoria",Toast.LENGTH_SHORT).show()
+                    }else{
+                        showDialogDeleteCategory = true
+                        selectedCategory = it
+
+                    }
+                })
 
 
 
@@ -135,6 +151,16 @@ fun MainScreen(navController: NavController) {
                         }
                     )
                 }
+                if (showDialogDeleteCategory) {
+                    DialogDeleteDialog(
+                        onConfirmButton = {
+                            categoryViewmodel.deleteCategoryByName(selectedCategory)
+                            showDialogDeleteCategory = false
+                        },
+                        onDismissButton = { showDialogDeleteCategory = false }
+                    )
+                }
+
             }
 
         }

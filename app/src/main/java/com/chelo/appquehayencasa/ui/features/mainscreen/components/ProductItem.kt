@@ -3,13 +3,16 @@ package com.chelo.appquehayencasa.ui.features.mainscreen.components
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -24,12 +27,15 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.capitalize
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.intl.Locale
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
 import com.chelo.appquehayencasa.data.entities.ProductEntity
 import com.chelo.appquehayencasa.ui.theme.AllCategory
@@ -53,6 +59,7 @@ fun ProductItem(product: ProductEntity, modifier: Modifier = Modifier, onDeleteB
         "Todos" -> AllCategory
         else -> DefaultCategory
     }
+    var scale = if (expanded) ContentScale.None else ContentScale.Crop
     Card(
         modifier = Modifier
             .padding(16.dp)
@@ -61,60 +68,56 @@ fun ProductItem(product: ProductEntity, modifier: Modifier = Modifier, onDeleteB
         colors = CardDefaults.cardColors(containerColor = BackgroundColor),
         onClick = { expanded = !expanded }
     ) {
-        Box(modifier = modifier.fillMaxWidth()) {
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center,
-                modifier = modifier.padding(32.dp)
+
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center,
+            modifier = modifier
+                .padding(16.dp)
+                .fillMaxSize()
+        ) {
+            Image(
+                painter = rememberAsyncImagePainter(File(product.image)),
+                contentDescription = null,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .size(150.dp)
+                    .clip(RoundedCornerShape(16.dp)),
+                contentScale = scale
+            )
+            Text(
+                product.nameProduct.capitalize(Locale.current),
+                color = ColorText,
+                modifier = modifier.padding(8.dp),
+                fontSize = 24.sp
+            )
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Center,
+                modifier = modifier.fillMaxWidth()
             ) {
-                Image(
-                    painter = rememberAsyncImagePainter(File(product.image)),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .height(100.dp),
-                    contentScale = ContentScale.None
-                )
-                Text(
-                    product.nameProduct.capitalize(Locale.current),
-                    color = ColorText,
-                    modifier = modifier.padding(8.dp)
-                )
-                Text("Cantidad : ${product.count}", color = ColorText)
+                RoundedComponent("${product.count} Unidades. ", border = border)
                 if (product.expireDate.isNotEmpty())
-                    Surface(
-                        shape = RoundedCornerShape(16.dp),
-                        border = BorderStroke(2.dp, border),
-                        color = BackgroundColor,
-                        modifier = modifier
-                            .padding(8.dp).fillMaxWidth()
-                    ) {
-                        Text(
-                            "Vencimiento : ${product.expireDate}",
-                            color = ColorText,
-                            fontWeight = FontWeight.Bold,
-                            modifier = modifier.padding(8.dp)
-                        )
-
-                    }
-                AnimatedVisibility(expanded) {
-                    Button(
-                        onClick =
-                            onDeleteButton,
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = ButtonColor,
-                            ColorText
-                        ), modifier = modifier.fillMaxWidth()
-                    ) {
-                        Text("Eliminar producto", fontWeight = FontWeight.Bold, color = ColorText)
-                    }
-                }
-
+                    RoundedComponent("Vence: ${product.expireDate}. ", border = border)
             }
 
+            AnimatedVisibility(expanded) {
+                Button(
+                    onClick =
+                        onDeleteButton,
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = ButtonColor,
+                        ColorText
+                    ), modifier = modifier.fillMaxWidth()
+                ) {
+                    Text("Eliminar producto", fontWeight = FontWeight.Bold, color = ColorText)
+                }
+            }
 
         }
+
+
     }
-
-
 }
+
+

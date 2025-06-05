@@ -25,3 +25,5 @@ val MeatCategory = Color(0xFFd23b1d)
 val Transparent = Color(0x00D23B1D)
 val BlackText = Color(0xFF000000)
 val DefaultCategory = Color(0xFFfcfcfc)
+val ConfirmRed = Color(0xFFFF2A00)
+
