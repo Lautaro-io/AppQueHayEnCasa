@@ -33,8 +33,8 @@ class ScheduleNotification @Inject constructor(
     private fun calculateDelay(): Long {
         val now = Calendar.getInstance()
         val target = Calendar.getInstance().apply {
-            set(Calendar.HOUR_OF_DAY, 10)
-            set(Calendar.MINUTE, 44)
+            set(Calendar.HOUR_OF_DAY, 12)
+            set(Calendar.MINUTE, 17)
             set(Calendar.SECOND, 0)
             if (before(now)) {
                 add(Calendar.DAY_OF_YEAR, 1)

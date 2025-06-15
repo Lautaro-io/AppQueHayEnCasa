@@ -26,20 +26,15 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.chelo.appquehayencasa.data.datastore.DataStoreManager
 import com.chelo.appquehayencasa.ui.features.navigation.LoginScreen
 import com.chelo.appquehayencasa.ui.theme.BackgroundColor
 import com.chelo.appquehayencasa.ui.theme.ButtonColor
 import com.chelo.appquehayencasa.ui.theme.CircleSuspend
 import com.chelo.appquehayencasa.ui.theme.ColorText
 import com.chelo.appquehayencasa.ui.theme.SubcolorText
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 
 
 @Composable

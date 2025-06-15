@@ -24,7 +24,6 @@ import com.chelo.appquehayencasa.ui.theme.BackgroundColor
 import com.chelo.appquehayencasa.viewmodel.UserViewmodel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 
 @Composable

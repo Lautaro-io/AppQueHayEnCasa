@@ -40,7 +40,6 @@ import com.chelo.appquehayencasa.ui.theme.ButtonColor
 import com.chelo.appquehayencasa.ui.theme.ColorObject
 import com.chelo.appquehayencasa.ui.theme.ColorObject.Companion.basicColors
 import com.chelo.appquehayencasa.ui.theme.ColorText
-import com.chelo.appquehayencasa.ui.theme.DefaultCategory
 import com.chelo.appquehayencasa.viewmodel.CategoryViewmodel
 import com.chelo.appquehayencasa.viewmodel.ProductViewmodel
 
