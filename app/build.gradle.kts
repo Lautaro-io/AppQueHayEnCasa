@@ -60,7 +60,12 @@ dependencies {
     debugImplementation(libs.androidx.ui.test.manifest)
 
 
+
+
+    implementation("androidx.work:work-runtime-ktx:2.10.1")
     implementation("com.google.accompanist:accompanist-permissions:0.28.0")
+
+
     val cameraxVersion = "1.3.0-rc01"
     implementation("androidx.camera:camera-camera2:$cameraxVersion")
     implementation("androidx.camera:camera-lifecycle:$cameraxVersion")
@@ -72,8 +77,11 @@ dependencies {
     implementation("androidx.room:room-ktx:2.6.1")
 
     // Dagger Hilt
+    implementation ("androidx.hilt:hilt-work:1.2.0")
     implementation ("com.google.dagger:hilt-android:2.50")
     kapt ("com.google.dagger:hilt-android-compiler:2.50")
+    kapt("androidx.hilt:hilt-compiler:1.2.0")
+
 
 // Para ViewModel en Compose
     implementation ("androidx.hilt:hilt-navigation-compose:1.1.0")

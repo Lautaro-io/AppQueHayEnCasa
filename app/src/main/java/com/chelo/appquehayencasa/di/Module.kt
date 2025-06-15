@@ -6,6 +6,8 @@ import com.chelo.appquehayencasa.data.daos.CategoryDao
 import com.chelo.appquehayencasa.data.daos.ProductDao
 import com.chelo.appquehayencasa.data.daos.UserDao
 import com.chelo.appquehayencasa.data.db.AppDb
+import com.chelo.appquehayencasa.data.repository.ProductRepository
+import com.chelo.appquehayencasa.notification.CheckExpireDateToNotifyUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -44,6 +46,11 @@ object Module {
     @Provides
     fun providesCategoryDao(db : AppDb) : CategoryDao{
         return db.categoryDao()
+    }
+
+    @Provides
+    fun providesExpireUseCase(repo : ProductRepository) : CheckExpireDateToNotifyUseCase{
+        return CheckExpireDateToNotifyUseCase(repo)
     }
 
 }

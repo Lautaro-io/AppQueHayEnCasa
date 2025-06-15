@@ -37,7 +37,10 @@ import com.chelo.appquehayencasa.ui.features.navigation.ProductForm
 import com.chelo.appquehayencasa.ui.theme.AllCategory
 import com.chelo.appquehayencasa.ui.theme.BackgroundColor
 import com.chelo.appquehayencasa.ui.theme.ButtonColor
+import com.chelo.appquehayencasa.ui.theme.ColorObject
+import com.chelo.appquehayencasa.ui.theme.ColorObject.Companion.basicColors
 import com.chelo.appquehayencasa.ui.theme.ColorText
+import com.chelo.appquehayencasa.ui.theme.DefaultCategory
 import com.chelo.appquehayencasa.viewmodel.CategoryViewmodel
 import com.chelo.appquehayencasa.viewmodel.ProductViewmodel
 
@@ -52,10 +55,12 @@ fun MainScreen(navController: NavController) {
     var showDialogDeleteCategory by remember { mutableStateOf(false) }
 
     val categoriesEntities by categoryViewmodel.allCategories.collectAsState(emptyList())
+    var colorReceiver : ColorObject = basicColors[0]
+
     val categoryList = categoriesEntities.map {
         Category(
             it.name,
-            color = if (it.name.lowercase() == "todos") AllCategory else ColorText
+            color = if (it.name.lowercase() == "todos") AllCategory else colorReceiver.color
         )
     }
     var showCategoryDialog by remember { mutableStateOf(false) }
@@ -103,15 +108,19 @@ fun MainScreen(navController: NavController) {
                     if (category != "Todos") {
                         productViewmodel.filterProductsByCategory(category)
                         filterState =
-                            true // Bug que cuando apretas de nuevo otra categoria , mecanicamente el state es false por ende muestra la lista principal
+                            true
                     } else {
                         filterState = false
                     }
                 }, onAddClickButton = { showCategoryDialog = true },
                 onLongPressed = {
-                    if (it == "Todos"){
-                        Toast.makeText(context, "No se puede eliminar esta categoria",Toast.LENGTH_SHORT).show()
-                    }else{
+                    if (it == "Todos") {
+                        Toast.makeText(
+                            context,
+                            "No se puede eliminar esta categoria",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    } else {
                         showDialogDeleteCategory = true
                         selectedCategory = it
 
@@ -145,8 +154,9 @@ fun MainScreen(navController: NavController) {
                 if (showCategoryDialog) {
                     CategoryDialog(
                         onDismissClick = { showCategoryDialog = false },
-                        onConfirmButton = {
-                            categoryViewmodel.insertCategory(CategoryEntity(name = it))
+                        onConfirmButton = { name , color ->
+                            categoryViewmodel.insertCategory(CategoryEntity(name = name))
+                            colorReceiver = color
                             showCategoryDialog = false
                         }
                     )

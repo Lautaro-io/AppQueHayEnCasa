@@ -9,7 +9,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.MenuAnchorType
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Surface
@@ -27,15 +30,21 @@ import androidx.compose.ui.unit.sp
 import com.chelo.appquehayencasa.ui.theme.BackgroundColor
 import com.chelo.appquehayencasa.ui.theme.BlackText
 import com.chelo.appquehayencasa.ui.theme.ButtonColor
+import com.chelo.appquehayencasa.ui.theme.ColorObject
+import com.chelo.appquehayencasa.ui.theme.ColorObject.Companion.basicColors
 import com.chelo.appquehayencasa.ui.theme.ColorText
+import com.chelo.appquehayencasa.ui.theme.SubcolorText
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CategoryDialog(
     onDismissClick: () -> Unit,
-    onConfirmButton: (String) -> Unit,
+    onConfirmButton: (String, ColorObject) -> Unit,
 ) {
     var name by remember { mutableStateOf("") }
+    var expanded by remember { mutableStateOf(false) }
+    var selectedColor by remember { mutableStateOf(basicColors[0]) }
+
     AlertDialog(
         onDismissRequest = { onDismissClick() }
     ) {
@@ -50,7 +59,12 @@ fun CategoryDialog(
                 modifier = Modifier.padding(16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text("Agregar nueva categoria.", fontWeight = FontWeight.Light, color = ColorText , fontSize = 16.sp)
+                Text(
+                    "Agregar nueva categoria.",
+                    fontWeight = FontWeight.Light,
+                    color = ColorText,
+                    fontSize = 16.sp
+                )
                 Spacer(modifier = Modifier.height(16.dp))
                 OutlinedTextField(
                     value = name,
@@ -64,8 +78,47 @@ fun CategoryDialog(
                     shape = RoundedCornerShape(32.dp)
                 )
                 Spacer(modifier = Modifier.height(8.dp))
+
+
+                ExposedDropdownMenuBox(
+                    expanded,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 60.dp),
+                    onExpandedChange = { expanded = !expanded }) {
+                    OutlinedTextField(
+                        value = selectedColor.name, onValueChange = {},
+                        readOnly =  true,
+                        modifier = Modifier
+                            .menuAnchor(type = MenuAnchorType.PrimaryEditable, true)
+                            .fillMaxWidth(),
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedContainerColor = ColorText,
+                            unfocusedContainerColor = ColorText,
+                            focusedTextColor = BlackText,
+                            unfocusedTextColor = SubcolorText
+                        ),
+                        shape = RoundedCornerShape(16.dp)
+                    )
+                    ExposedDropdownMenu(expanded, onDismissRequest = { expanded = false }) {
+                        basicColors.forEach {
+                            DropdownMenuItem(
+                                text = { Text(it.name , color = it.color) },
+                                onClick = {
+                                    selectedColor = it
+                                    expanded = false
+                                }
+
+                            )
+                        }
+                    }
+
+                }
+
+
+
                 Button(
-                    onClick = { onConfirmButton(name) },
+                    onClick = { onConfirmButton(name,selectedColor) },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = ButtonColor,
                         contentColor = ColorText

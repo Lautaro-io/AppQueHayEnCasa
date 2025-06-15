@@ -31,6 +31,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.capitalize
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.intl.Locale
@@ -66,7 +67,9 @@ fun ProductItem(product: ProductEntity, modifier: Modifier = Modifier, onDeleteB
             .fillMaxWidth(),
         border = BorderStroke(1.dp, border),
         colors = CardDefaults.cardColors(containerColor = BackgroundColor),
-        onClick = { expanded = !expanded }
+        onClick = {
+            expanded = !expanded
+        }
     ) {
 
         Column(

@@ -35,11 +35,6 @@ class CategoryViewmodel @Inject constructor(private val repo : CategoryRepositor
         }
     }
 
-    fun deleteCategory (category: CategoryEntity){
-        viewModelScope.launch {
-            repo.deleteCategory(category)
-        }
-    }
 
     fun deleteCategoryByName(categoryName: String){
         viewModelScope.launch {

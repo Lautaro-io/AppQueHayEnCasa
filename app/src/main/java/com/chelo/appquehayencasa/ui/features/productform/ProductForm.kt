@@ -55,6 +55,7 @@ import com.chelo.appquehayencasa.viewmodel.CategoryViewmodel
 import com.chelo.appquehayencasa.viewmodel.ProductViewmodel
 import java.time.Instant
 import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -73,13 +74,13 @@ fun ProductForm(imagePath: String, navController: NavController) {
     val categories by  categoryViewmodel.allCategories.collectAsState(emptyList())
 
 
-
     val state = rememberDatePickerState()
     var showDateDialog by remember { mutableStateOf(false) }
     val date = state.selectedDateMillis
     date?.let {
         val localDate = Instant.ofEpochMilli(it).atZone(ZoneId.of("UTC")).toLocalDate()
-        expireDate = "${localDate.dayOfMonth}/${localDate.month}/${localDate.year}"
+        val internalFormat = localDate.format(DateTimeFormatter.ISO_LOCAL_DATE)
+        expireDate = internalFormat
     }
 
     Scaffold {
