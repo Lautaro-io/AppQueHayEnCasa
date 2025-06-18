@@ -1,6 +1,5 @@
 package com.chelo.appquehayencasa.ui.features.mainscreen
 
-import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -26,7 +25,6 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.chelo.appquehayencasa.data.entities.CategoryEntity
-import com.chelo.appquehayencasa.data.entities.ProductEntity
 import com.chelo.appquehayencasa.ui.features.mainscreen.components.CategoryDialog
 import com.chelo.appquehayencasa.ui.features.mainscreen.components.DialogDeleteDialog
 import com.chelo.appquehayencasa.ui.features.mainscreen.components.DialogDeleteProduct

@@ -1,7 +1,7 @@
 package com.chelo.appquehayencasa.ui.features.productform
 
+import android.content.Context
 import android.os.Build
-import android.util.Log
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DatePicker
@@ -28,22 +29,22 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import com.chelo.appquehayencasa.data.entities.ProductEntity
 import com.chelo.appquehayencasa.ui.features.mainscreen.components.TitleSection
 import com.chelo.appquehayencasa.ui.features.navigation.MainScreen
 
@@ -63,27 +64,18 @@ import java.time.format.DateTimeFormatter
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ProductForm(imagePath: String, navController: NavController, productId: Int?) {
+fun ProductForm(imagePath: String, navController: NavController, productId: Long?) {
 
-    val productViewmodel: ProductViewmodel = hiltViewModel()
+    val vm: ProductViewmodel = hiltViewModel()
     val categoryViewmodel: CategoryViewmodel = hiltViewModel()
     val context = LocalContext.current
     var expanded by remember { mutableStateOf(false) }
-    var name by remember { mutableStateOf("") }
-    var count by remember { mutableStateOf("") }
-    var category by remember { mutableStateOf("") }
-    var expireDate by remember { mutableStateOf("") }
     val categories by categoryViewmodel.allCategories.collectAsState(emptyList())
-    val product by produceState<ProductEntity?>(initialValue = null, productId) {
-        value = productId?.let {
-            productViewmodel.getProductById(it)
+
+    LaunchedEffect(productId) {
+        productId?.let {
+            vm.loadProduct(it)
         }
-    }
-    product?.let {
-        name = it.nameProduct
-        count = it.count.toString()
-        category = it.category
-        expireDate = it.expireDate
     }
     val state = rememberDatePickerState()
     var showDateDialog by remember { mutableStateOf(false) }
@@ -91,15 +83,15 @@ fun ProductForm(imagePath: String, navController: NavController, productId: Int?
     date?.let {
         val localDate = Instant.ofEpochMilli(it).atZone(ZoneId.of("UTC")).toLocalDate()
         val internalFormat = localDate.format(DateTimeFormatter.ISO_LOCAL_DATE)
-        expireDate = internalFormat
+        vm.onExpireChanged(internalFormat)
     }
 
-    Scaffold {
+    Scaffold { innerPadding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .background(BackgroundColor)
-                .padding(it),
+                .padding(innerPadding),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             TitleSection("Agregar producto")
@@ -112,8 +104,8 @@ fun ProductForm(imagePath: String, navController: NavController, productId: Int?
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
                 OutlinedTextField(
-                    value = name,
-                    onValueChange = { name = it },
+                    value = vm.name,
+                    onValueChange = { vm.onNameChanged(it) },
                     placeholder = { Text("Nombre del producto") },
                     colors = OutlinedTextFieldDefaults.colors(
                         focusedContainerColor = ColorText,
@@ -121,12 +113,12 @@ fun ProductForm(imagePath: String, navController: NavController, productId: Int?
                         focusedTextColor = BlackText,
                         unfocusedTextColor = BlackText
                     ),
-                    shape = RoundedCornerShape(32.dp)
+                    shape = RoundedCornerShape(32.dp), singleLine = true
                 )
 
                 OutlinedTextField(
-                    value = count,
-                    onValueChange = { count = it },
+                    value = vm.count,
+                    onValueChange = vm::onCountChanged,
                     placeholder = { Text("Cantidad") },
                     colors = OutlinedTextFieldDefaults.colors(
                         focusedContainerColor = ColorText,
@@ -134,7 +126,8 @@ fun ProductForm(imagePath: String, navController: NavController, productId: Int?
                         focusedTextColor = BlackText,
                         unfocusedTextColor = BlackText
                     ),
-                    shape = RoundedCornerShape(32.dp)
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                    shape = RoundedCornerShape(32.dp), singleLine = true
                 )
 
 
@@ -148,7 +141,7 @@ fun ProductForm(imagePath: String, navController: NavController, productId: Int?
                         modifier = Modifier
                             .menuAnchor(type = MenuAnchorType.PrimaryEditable, true)
                             .fillMaxWidth(),
-                        value = if (category != "") category else "Categoria",
+                        value = if (vm.category != "") vm.category else "Categoria",
                         onValueChange = { },
                         readOnly = true,
                         placeholder = { Text("Categoria") },
@@ -158,14 +151,14 @@ fun ProductForm(imagePath: String, navController: NavController, productId: Int?
                             focusedTextColor = BlackText,
                             unfocusedTextColor = SubcolorText
                         ),
-                        shape = RoundedCornerShape(32.dp)
+                        shape = RoundedCornerShape(32.dp), singleLine = true
                     )
                     ExposedDropdownMenu(expanded, onDismissRequest = { expanded = false }) {
                         categories.forEach { categoryItem ->
                             DropdownMenuItem(
                                 text = { Text(categoryItem.name) },
                                 onClick = {
-                                    category = categoryItem.name
+                                    vm.onCategoryChanged(categoryItem.name)
                                     expanded = false
                                 })
                         }
@@ -186,7 +179,7 @@ fun ProductForm(imagePath: String, navController: NavController, productId: Int?
                     ) {
 
                     Text(
-                        if (expireDate != "") "Vencimiento : $expireDate" else "Fecha de vencimiento(opcional)",
+                        if (vm.expireDate != "") "Vencimiento : ${vm.expireDate}" else "Fecha de vencimiento(opcional)",
                         modifier = Modifier
                             .padding(8.dp),
                         fontWeight = FontWeight.Light
@@ -200,65 +193,33 @@ fun ProductForm(imagePath: String, navController: NavController, productId: Int?
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 64.dp, vertical = 24.dp),
-                onClick = {
-                    when {
-                        listOf(name, count, category, imagePath).any { it.isEmpty() } ->
+                onClick =
+                    {
+                        if (listOf(vm.name, vm.count, vm.category).any { it.isEmpty() }) {
                             Toast.makeText(context, "Complete todos los campos", Toast.LENGTH_SHORT)
                                 .show()
-
-                        else -> {
-                            if (product != null){
-                                val updatedProduct = product!!.copy(
-                                    nameProduct = name,
-                                    expireDate = expireDate,
-                                    count = count.toInt(),
-                                    category = category,
-                                    image = imagePath
-                                )
-
-                                productViewmodel.updateProduct(updatedProduct)
-                                navController.navigate(MainScreen.route) {
-                                    popUpTo(0) { inclusive = true }
-                                }
-
-                                Toast.makeText(
-                                    context,
-                                    "Producto actualizado con exito!",
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                            }
-                            else{
-                            productViewmodel.insertProduct(
-                                ProductEntity(
-                                    0,
-                                    nameProduct = name,
-                                    expireDate = expireDate,
-                                    count = count.toInt(),
-                                    category = category,
-                                    image = imagePath
-                                )
-                            )
+                        } else {
+                            vm.saveProduct(imagePath, productId)
                             navController.navigate(MainScreen.route) {
-                                popUpTo(0) { inclusive = true }
+                                popUpTo(0) {
+                                    inclusive = true
+                                }
                             }
+                            if (productId != null) showToast(
+                                "Producto actualizado con éxito!",
+                                context
+                            ) else showToast("Producto agregado con éxito!", context)
 
-                            Toast.makeText(
-                                context,
-                                "Producto agregado con exito!",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                            }
                         }
 
-                    }
-                },
+                    },
                 colors = ButtonDefaults.buttonColors(
                     contentColor = ColorText,
                     containerColor = ButtonColor
                 )
             ) {
                 Text(
-                    if (product != null) "Actualizar producto." else "Agregar Producto",
+                    if (productId != null) "Actualizar producto." else "Agregar Producto",
                     fontWeight = FontWeight.ExtraBold,
                     fontSize = 18.sp
                 )
@@ -272,4 +233,9 @@ fun ProductForm(imagePath: String, navController: NavController, productId: Int?
             confirmButton = { Button(onClick = { showDateDialog = false }) { Text("Confirmar") } }
         ) { DatePicker(state) }
     }
+}
+
+
+private fun showToast(msg: String, context: Context) {
+    Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()
 }

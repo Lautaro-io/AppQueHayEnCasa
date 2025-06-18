@@ -33,5 +33,5 @@ interface ProductDao {
 
 
     @Query("SELECT * FROM products WHERE id = :productId")
-    suspend fun getProductById(productId : Int) : ProductEntity
+    suspend fun getProductById(productId : Long) : ProductEntity
 }

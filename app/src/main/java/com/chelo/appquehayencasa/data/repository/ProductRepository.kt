@@ -14,7 +14,7 @@ class ProductRepository @Inject constructor(val dao: ProductDao) {
 
     fun getAllProducts() = dao.getAllProducts()
 
-    suspend fun getProductById(productId: Int) : ProductEntity = dao.getProductById(productId)
+    suspend fun getProductById(productId: Long) : ProductEntity = dao.getProductById(productId)
 
     fun getCategoryProducts(category : String ) = dao.getCategoryProducts(category)
 

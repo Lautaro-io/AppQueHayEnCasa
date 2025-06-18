@@ -54,14 +54,14 @@ fun NavigationWrapper() {
                     defaultValue= null
                 },
                 navArgument("productId") {
-                    type = NavType.IntType
-                    defaultValue = -1
+                    type = NavType.LongType
+                    defaultValue = -1L
                 }
             )
         ) { backStackEntry ->
             val imagePath = backStackEntry.arguments?.getString("imagePath")
             val decodeImage = Uri.decode(imagePath ?: "")
-            val productId = backStackEntry.arguments?.getInt("productId")
+            val productId = backStackEntry.arguments?.getLong("productId").takeIf { it != -1L }
             ProductForm(decodeImage, navController , productId)
         }
     }
