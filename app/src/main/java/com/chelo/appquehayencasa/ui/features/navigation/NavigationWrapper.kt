@@ -1,6 +1,8 @@
 package com.chelo.appquehayencasa.ui.features.navigation
 
 import android.net.Uri
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.platform.LocalContext
@@ -18,6 +20,7 @@ import com.chelo.appquehayencasa.ui.features.productform.ProductForm
 import com.chelo.appquehayencasa.ui.features.splashscreen.SplashScreenApp
 
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun NavigationWrapper() {
     val navController = rememberNavController()
@@ -42,18 +45,24 @@ fun NavigationWrapper() {
             CameraScreen(navController)
         }
         composable(
-            route = "${ProductForm.route}?imagePath={imagePath}",
+            route = "${ProductForm.route}?imagePath={imagePath}&productId={productId}",
+
             arguments = listOf(
                 navArgument("imagePath"){
                     type = NavType.StringType
                     nullable= true
                     defaultValue= null
+                },
+                navArgument("productId") {
+                    type = NavType.IntType
+                    defaultValue = -1
                 }
             )
         ) { backStackEntry ->
             val imagePath = backStackEntry.arguments?.getString("imagePath")
             val decodeImage = Uri.decode(imagePath ?: "")
-            ProductForm(decodeImage, navController)
+            val productId = backStackEntry.arguments?.getInt("productId")
+            ProductForm(decodeImage, navController , productId)
         }
     }
 

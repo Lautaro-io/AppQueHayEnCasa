@@ -41,4 +41,14 @@ class CategoryViewmodel @Inject constructor(private val repo : CategoryRepositor
             repo.deleteCategoryByName(categoryName)
         }
     }
+
+    fun isCategorySaved(categoryName:String) : Boolean{
+        var response = false
+        viewModelScope.launch {
+            if (repo.getCategoryByName(categoryName) > 0) {
+                response = true
+            }
+        }
+        return response
+    }
 }

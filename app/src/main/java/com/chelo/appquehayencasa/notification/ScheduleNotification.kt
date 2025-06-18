@@ -1,6 +1,7 @@
 package com.chelo.appquehayencasa.notification
 
 import android.content.Context
+import android.util.Log
 import androidx.work.ExistingWorkPolicy
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
@@ -32,15 +33,22 @@ class ScheduleNotification @Inject constructor(
 
     private fun calculateDelay(): Long {
         val now = Calendar.getInstance()
-        val target = Calendar.getInstance().apply {
-            set(Calendar.HOUR_OF_DAY, 12)
-            set(Calendar.MINUTE, 17)
-            set(Calendar.SECOND, 0)
-            if (before(now)) {
-                add(Calendar.DAY_OF_YEAR, 1)
-            }
+        val intervals = listOf<Int>(12,17,22)
+        intervals.forEach { hour ->
         }
-        return target.timeInMillis - now.timeInMillis
+        val target =
+            intervals.map { hour ->
+                Calendar.getInstance().apply {
+                    set(Calendar.HOUR_OF_DAY, hour)
+                    set(Calendar.MINUTE, 0)
+                    set(Calendar.SECOND, 0)
+                    if (before(now)) {
+                        add(Calendar.DAY_OF_YEAR, 1)
+                    }
+            }.timeInMillis - now.timeInMillis
+
+        }
+        return target.minOrNull() ?: 0
     }
 
 

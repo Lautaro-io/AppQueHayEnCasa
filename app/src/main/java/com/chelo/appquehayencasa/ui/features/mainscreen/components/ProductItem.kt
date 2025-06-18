@@ -40,12 +40,18 @@ import com.chelo.appquehayencasa.ui.theme.ButtonColor
 import com.chelo.appquehayencasa.ui.theme.CleanCategory
 import com.chelo.appquehayencasa.ui.theme.ColorText
 import com.chelo.appquehayencasa.ui.theme.DefaultCategory
+import com.chelo.appquehayencasa.ui.theme.EditBtnColor
 import com.chelo.appquehayencasa.ui.theme.MeatCategory
 import java.io.File
 
 
 @Composable
-fun ProductItem(product: ProductEntity, modifier: Modifier = Modifier, onDeleteButton: () -> Unit) {
+fun ProductItem(
+    product: ProductEntity,
+    modifier: Modifier = Modifier,
+    onEditButton: () -> Unit,
+    onDeleteButton: () -> Unit,
+) {
     var expanded by remember { mutableStateOf(false) }
     val border: Color = when (product.category) {
         "Almacen" -> AlmacenCategory
@@ -99,16 +105,33 @@ fun ProductItem(product: ProductEntity, modifier: Modifier = Modifier, onDeleteB
             }
 
             AnimatedVisibility(expanded) {
-                Button(
-                    onClick =
-                        onDeleteButton,
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = ButtonColor,
-                        ColorText
-                    ), modifier = modifier.fillMaxWidth()
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text("Eliminar producto", fontWeight = FontWeight.Bold, color = ColorText)
+
+                    Button(
+                        onClick =
+                            onEditButton,
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = EditBtnColor,
+                            ColorText
+                        ),
+                    ) {
+                        Text("Editar producto", fontWeight = FontWeight.Bold, color = ColorText)
+                    }
+                    Button(
+                        onClick =
+                            onDeleteButton,
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = ButtonColor,
+                            ColorText
+                        )
+                    ) {
+                        Text("Eliminar producto", fontWeight = FontWeight.Bold, color = ColorText)
+                    }
                 }
+
             }
 
         }

@@ -1,5 +1,6 @@
 package com.chelo.appquehayencasa.ui.features.mainscreen
 
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -25,6 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.chelo.appquehayencasa.data.entities.CategoryEntity
+import com.chelo.appquehayencasa.data.entities.ProductEntity
 import com.chelo.appquehayencasa.ui.features.mainscreen.components.CategoryDialog
 import com.chelo.appquehayencasa.ui.features.mainscreen.components.DialogDeleteDialog
 import com.chelo.appquehayencasa.ui.features.mainscreen.components.DialogDeleteProduct
@@ -52,9 +54,8 @@ fun MainScreen(navController: NavController) {
     val categoryViewmodel: CategoryViewmodel = hiltViewModel()
     var showDialogDelete by remember { mutableStateOf(false) }
     var showDialogDeleteCategory by remember { mutableStateOf(false) }
-
     val categoriesEntities by categoryViewmodel.allCategories.collectAsState(emptyList())
-    var colorReceiver : ColorObject = basicColors[0]
+    var colorReceiver: ColorObject = basicColors[0]
 
     val categoryList = categoriesEntities.map {
         Category(
@@ -66,10 +67,11 @@ fun MainScreen(navController: NavController) {
 
     var selectedCategory by remember { mutableStateOf("Todos") }
 
+
     var filterState by remember { mutableStateOf(false) }
 
-    var products = productViewmodel.allProducts.collectAsState(emptyList())
-    var filteredProducts = productViewmodel.filteredProducts.collectAsState()
+    val products by productViewmodel.allProducts.collectAsState()
+    val filteredProducts by productViewmodel.filteredProducts.collectAsState()
     val productsToShow = if (filterState) filteredProducts else products
 
     Scaffold(
@@ -134,48 +136,68 @@ fun MainScreen(navController: NavController) {
                     .fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                if (productsToShow.value.isEmpty()) {
+                if (productsToShow.isEmpty()) {
                     EmptyProduct()
                 } else {
                     LazyColumn(modifier = Modifier.padding(horizontal = 20.dp)) {
-                        itemsIndexed(productsToShow.value.reversed()) { index, item ->
+                        itemsIndexed(productsToShow.reversed()) { index, item ->
                             ProductItem(
                                 item,
+                                onEditButton = {
+                                    navController.navigate("${ProductForm.route}?imagePath=${item.image}&productId=${item.id}")
+                                },
                                 onDeleteButton = { showDialogDelete = true })
-                            if (showDialogDelete)
-                                DialogDeleteProduct(onDismissClick = { showDialogDelete = false }) {
-                                    productViewmodel.deleteProduct(item)
-                                    showDialogDelete = false
-                                }
+
+                            when {
+                                showDialogDelete ->
+                                    DialogDeleteProduct(onDismissClick = {
+                                        showDialogDelete = false
+                                    }) {
+                                        productViewmodel.deleteProduct(item)
+                                        showDialogDelete = false
+                                    }
+                            }
                         }
                     }
                 }
-                if (showCategoryDialog) {
-                    CategoryDialog(
-                        onDismissClick = { showCategoryDialog = false },
-                        onConfirmButton = { name , color ->
-                            categoryViewmodel.insertCategory(CategoryEntity(name = name))
-                            colorReceiver = color
-                            showCategoryDialog = false
-                        }
-                    )
-                }
-                if (showDialogDeleteCategory) {
-                    DialogDeleteDialog(
-                        onConfirmButton = {
-                            categoryViewmodel.deleteCategoryByName(selectedCategory)
-                            showDialogDeleteCategory = false
-                        },
-                        onDismissButton = { showDialogDeleteCategory = false }
-                    )
+
+
+                when {
+                    showCategoryDialog ->
+                        CategoryDialog(
+                            onDismissClick = { showCategoryDialog = false },
+                            onConfirmButton = { name, color ->
+                                if (!categoryViewmodel.isCategorySaved(name)) {
+                                    categoryViewmodel.insertCategory(CategoryEntity(name = name))
+                                    colorReceiver = color
+                                    showCategoryDialog = false
+                                } else
+                                    Toast.makeText(
+                                        context,
+                                        "No pueden haber 2 categorias con el mismo nombre!",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+
+                            }
+                        )
+
+                    showDialogDeleteCategory ->
+                        DialogDeleteDialog(
+                            onConfirmButton = {
+                                productViewmodel.deleteProductsByCategory(selectedCategory)
+                                categoryViewmodel.deleteCategoryByName(selectedCategory)
+                                showDialogDeleteCategory = false
+                            },
+                            onDismissButton = { showDialogDeleteCategory = false }
+                        )
+
+
                 }
 
             }
 
+
         }
 
-
     }
-
-
 }

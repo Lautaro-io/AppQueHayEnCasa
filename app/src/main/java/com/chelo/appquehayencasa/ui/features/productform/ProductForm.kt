@@ -1,6 +1,7 @@
 package com.chelo.appquehayencasa.ui.features.productform
 
 import android.os.Build
+import android.util.Log
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
@@ -30,6 +31,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -61,7 +63,7 @@ import java.time.format.DateTimeFormatter
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ProductForm(imagePath: String, navController: NavController) {
+fun ProductForm(imagePath: String, navController: NavController, productId: Int?) {
 
     val productViewmodel: ProductViewmodel = hiltViewModel()
     val categoryViewmodel: CategoryViewmodel = hiltViewModel()
@@ -71,9 +73,18 @@ fun ProductForm(imagePath: String, navController: NavController) {
     var count by remember { mutableStateOf("") }
     var category by remember { mutableStateOf("") }
     var expireDate by remember { mutableStateOf("") }
-    val categories by  categoryViewmodel.allCategories.collectAsState(emptyList())
-
-
+    val categories by categoryViewmodel.allCategories.collectAsState(emptyList())
+    val product by produceState<ProductEntity?>(initialValue = null, productId) {
+        value = productId?.let {
+            productViewmodel.getProductById(it)
+        }
+    }
+    product?.let {
+        name = it.nameProduct
+        count = it.count.toString()
+        category = it.category
+        expireDate = it.expireDate
+    }
     val state = rememberDatePickerState()
     var showDateDialog by remember { mutableStateOf(false) }
     val date = state.selectedDateMillis
@@ -137,7 +148,7 @@ fun ProductForm(imagePath: String, navController: NavController) {
                         modifier = Modifier
                             .menuAnchor(type = MenuAnchorType.PrimaryEditable, true)
                             .fillMaxWidth(),
-                        value = if( category!= "") category else "Categoria" ,
+                        value = if (category != "") category else "Categoria",
                         onValueChange = { },
                         readOnly = true,
                         placeholder = { Text("Categoria") },
@@ -196,6 +207,27 @@ fun ProductForm(imagePath: String, navController: NavController) {
                                 .show()
 
                         else -> {
+                            if (product != null){
+                                val updatedProduct = product!!.copy(
+                                    nameProduct = name,
+                                    expireDate = expireDate,
+                                    count = count.toInt(),
+                                    category = category,
+                                    image = imagePath
+                                )
+
+                                productViewmodel.updateProduct(updatedProduct)
+                                navController.navigate(MainScreen.route) {
+                                    popUpTo(0) { inclusive = true }
+                                }
+
+                                Toast.makeText(
+                                    context,
+                                    "Producto actualizado con exito!",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                            else{
                             productViewmodel.insertProduct(
                                 ProductEntity(
                                     0,
@@ -215,6 +247,7 @@ fun ProductForm(imagePath: String, navController: NavController) {
                                 "Producto agregado con exito!",
                                 Toast.LENGTH_SHORT
                             ).show()
+                            }
                         }
 
                     }
@@ -223,7 +256,13 @@ fun ProductForm(imagePath: String, navController: NavController) {
                     contentColor = ColorText,
                     containerColor = ButtonColor
                 )
-            ) { Text("Agregar Producto", fontWeight = FontWeight.ExtraBold, fontSize = 18.sp) }
+            ) {
+                Text(
+                    if (product != null) "Actualizar producto." else "Agregar Producto",
+                    fontWeight = FontWeight.ExtraBold,
+                    fontSize = 18.sp
+                )
+            }
         }
     }
 

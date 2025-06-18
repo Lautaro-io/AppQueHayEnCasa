@@ -25,7 +25,7 @@ fun DialogDeleteDialog(onConfirmButton: () -> Unit, onDismissButton: () -> Unit)
         dismissButton = {
             TextButton(onClick = onDismissButton) { Text("Cancelar", color = ColorText) } },
         title = { Text("Eliminar esta categoria?", color = ColorText) },
-        text = { Text("Desea eliminar esta categoria?", color = ColorText) },
+        text = { Text("Desea eliminar esta categoria?\nAl eliminar esta categoria se borran todos los productos de la misma.", color = ColorText) },
         shape = RoundedCornerShape(16.dp),
         backgroundColor = BackgroundColor,
         contentColor = ColorText,

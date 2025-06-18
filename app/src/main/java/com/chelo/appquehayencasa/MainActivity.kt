@@ -27,7 +27,7 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
             if (ContextCompat.checkSelfPermission(
-                    this,
+                    this,   
                     Manifest.permission.POST_NOTIFICATIONS
                 ) != PackageManager.PERMISSION_GRANTED
             ) {
@@ -38,7 +38,9 @@ class MainActivity : ComponentActivity() {
                 )
             }
         }
+
         scheduler.scheduleNotification()
+
         setContent {
             AppQueHayEnCasaTheme {
                 NavigationWrapper()

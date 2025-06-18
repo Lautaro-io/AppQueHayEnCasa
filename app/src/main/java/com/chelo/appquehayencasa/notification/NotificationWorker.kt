@@ -25,15 +25,28 @@ class NotificationWorker @AssistedInject constructor(
     @Assisted context: Context,
     @Assisted workerParams: WorkerParameters,
     private val checker: CheckExpireDateToNotifyUseCase,
+    private val scheduler : ScheduleNotification
 ) : CoroutineWorker(context, workerParams) {
     init {
         Log.i("CHELO", "worker instanciado")
     }
 
+    override suspend fun doWork(): Result {
+        createNotificationChannel()
+        Log.i("CHELO", "TRABAJANDO")
+        if (checker.checkExpire()) {
+            Log.i("CHELO", "MOSTRANDONOTIIIIIIIIIIIIIIIII")
+            showNotification()
+            scheduler.scheduleNotification()
+            return Result.success()
+        } else {
+            return Result.failure()
+        }
+    }
+
     companion object {
         const val NOTIFICATION_CHANNEL = "NotificationChannel2"
     }
-
 
     private fun showNotification() {
         val intent = Intent(applicationContext, MainActivity::class.java)
@@ -50,11 +63,12 @@ class NotificationWorker @AssistedInject constructor(
             .setContentTitle("Producto en riesgo!")
             .setContentText("Tienes un producto pronto a vencer")
             .setPriority(NotificationManager.IMPORTANCE_HIGH)
-            .setSmallIcon(R.drawable.appiconsmall)
+            .setSmallIcon(R.drawable.appiconbwsvg)
             .setContentIntent(pendingIntent)
             .build()
         notificationManager.notify(0, notification)
     }
+
 
     private fun createNotificationChannel() {
         val notificationManager =
@@ -71,21 +85,6 @@ class NotificationWorker @AssistedInject constructor(
         }
 
 
-    }
-
-
-    override suspend fun doWork(): Result {
-        createNotificationChannel()
-        Log.i("CHELO", "TRABAJANDO")
-        if (checker.checkExpire()) {
-            Log.i("CHELO", "MOSTRANDONOTIIIIIIIIIIIIIIIII")
-            showNotification()
-            return Result.success()
-        } else {
-            Log.i("CHELO", "NO FUNCAAAAAAAAAAAAAA")
-            return Result.failure()
-        }
-        Log.i("CHELO", "Fallloooooooooooo")
     }
 
 

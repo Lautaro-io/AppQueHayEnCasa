@@ -13,4 +13,7 @@ class CategoryRepository @Inject constructor(private val dao: CategoryDao) {
     fun getAllCategories() = dao.getAllCategories()
 
     suspend fun deleteCategoryByName(categoryName: String) = dao.deleteCategoryByName(categoryName)
+
+
+    suspend fun getCategoryByName(categoryName : String) = dao.getCategoryByName(categoryName)
 }
