@@ -3,9 +3,8 @@
 **¿Qué Hay En Casa?** es una app Android desarrollada en Jetpack Compose que permite llevar el control de los productos que tenés en casa, con categorías, fechas de vencimiento y filtros personalizados. Ideal para reducir el desperdicio de comida o simplemente organizar tu casa.
 
 <div align="center">
-  <img src="![image](https://github.com/user-attachments/assets/c1e19358-a5c2-4d3c-bb96-d6cb8f61ee3e)"/>
-  <img src="![image](https://github.com/user-attachments/assets/d3d8309c-3da2-4960-a9e5-6310c739e8fc)"/>
-  <img src="![image](https://github.com/user-attachments/assets/d5700516-921c-421d-9dfa-26da8158ee2d)"/>
+  ![AppqhcGif](https://github.com/user-attachments/assets/34cf9add-bd8f-4d53-8799-f8d46b328381)
+
 </div>
 
 ---
