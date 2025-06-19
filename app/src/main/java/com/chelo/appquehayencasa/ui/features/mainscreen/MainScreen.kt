@@ -32,15 +32,12 @@ import com.chelo.appquehayencasa.ui.features.mainscreen.components.EmptyProduct
 import com.chelo.appquehayencasa.ui.features.mainscreen.components.ProductCategory
 import com.chelo.appquehayencasa.ui.features.mainscreen.components.ProductItem
 import com.chelo.appquehayencasa.ui.features.mainscreen.components.TitleSection
-import com.chelo.appquehayencasa.ui.features.models.Category
 import com.chelo.appquehayencasa.ui.features.navigation.ProductForm
-import com.chelo.appquehayencasa.ui.theme.AllCategory
 import com.chelo.appquehayencasa.ui.theme.BackgroundColor
 import com.chelo.appquehayencasa.ui.theme.ButtonColor
-import com.chelo.appquehayencasa.ui.theme.ColorObject
-import com.chelo.appquehayencasa.ui.theme.ColorObject.Companion.basicColors
 import com.chelo.appquehayencasa.ui.theme.ColorText
 import com.chelo.appquehayencasa.viewmodel.CategoryViewmodel
+import com.chelo.appquehayencasa.viewmodel.MainscreenViewmodel
 import com.chelo.appquehayencasa.viewmodel.ProductViewmodel
 
 
@@ -50,27 +47,15 @@ fun MainScreen(navController: NavController) {
 
     val productViewmodel: ProductViewmodel = hiltViewModel()
     val categoryViewmodel: CategoryViewmodel = hiltViewModel()
+    val mvm: MainscreenViewmodel = hiltViewModel()
+
+
     var showDialogDelete by remember { mutableStateOf(false) }
     var showDialogDeleteCategory by remember { mutableStateOf(false) }
-    val categoriesEntities by categoryViewmodel.allCategories.collectAsState(emptyList())
-    var colorReceiver: ColorObject = basicColors[0]
-
-    val categoryList = categoriesEntities.map {
-        Category(
-            it.name,
-            color = if (it.name.lowercase() == "todos") AllCategory else colorReceiver.color
-        )
-    }
     var showCategoryDialog by remember { mutableStateOf(false) }
-
-    var selectedCategory by remember { mutableStateOf("Todos") }
-
-
-    var filterState by remember { mutableStateOf(false) }
-
-    val products by productViewmodel.allProducts.collectAsState()
-    val filteredProducts by productViewmodel.filteredProducts.collectAsState()
-    val productsToShow = if (filterState) filteredProducts else products
+    val categoryList by mvm.categories.collectAsState()
+    val products by mvm.products.collectAsState()
+    val selectedCategory by mvm.selectedCategory.collectAsState()
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -103,13 +88,12 @@ fun MainScreen(navController: NavController) {
                 categoryList,
                 selectedCategory = selectedCategory,
                 onItemSelected = { category ->
-                    selectedCategory = category
+                    mvm.selectCategory(category)
                     if (category != "Todos") {
                         productViewmodel.filterProductsByCategory(category)
-                        filterState =
-                            true
+                        mvm.changeFilterState(true)
                     } else {
-                        filterState = false
+                        mvm.changeFilterState(false)
                     }
                 }, onAddClickButton = { showCategoryDialog = true },
                 onLongPressed = {
@@ -121,7 +105,7 @@ fun MainScreen(navController: NavController) {
                         ).show()
                     } else {
                         showDialogDeleteCategory = true
-                        selectedCategory = it
+                        mvm.selectCategory(it)
 
                     }
                 })
@@ -134,11 +118,11 @@ fun MainScreen(navController: NavController) {
                     .fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                if (productsToShow.isEmpty()) {
+                if (products.isEmpty()) {
                     EmptyProduct()
                 } else {
                     LazyColumn(modifier = Modifier.padding(horizontal = 20.dp)) {
-                        itemsIndexed(productsToShow.reversed()) { index, item ->
+                        itemsIndexed(products.reversed()) { index, item ->
                             ProductItem(
                                 item,
                                 onEditButton = {
@@ -167,7 +151,6 @@ fun MainScreen(navController: NavController) {
                             onConfirmButton = { name, color ->
                                 if (!categoryViewmodel.isCategorySaved(name)) {
                                     categoryViewmodel.insertCategory(CategoryEntity(name = name))
-                                    colorReceiver = color
                                     showCategoryDialog = false
                                 } else
                                     Toast.makeText(
@@ -182,8 +165,8 @@ fun MainScreen(navController: NavController) {
                     showDialogDeleteCategory ->
                         DialogDeleteDialog(
                             onConfirmButton = {
-                                productViewmodel.deleteProductsByCategory(selectedCategory)
-                                categoryViewmodel.deleteCategoryByName(selectedCategory)
+                                productViewmodel.deleteProductsByCategory(mvm.selectedCategory.value)
+                                categoryViewmodel.deleteCategoryByName(mvm.selectedCategory.value)
                                 showDialogDeleteCategory = false
                             },
                             onDismissButton = { showDialogDeleteCategory = false }

@@ -65,10 +65,10 @@ import java.time.format.DateTimeFormatter
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ProductForm(imagePath: String, navController: NavController, productId: Long?) {
+    val context = LocalContext.current
 
     val vm: ProductViewmodel = hiltViewModel()
     val categoryViewmodel: CategoryViewmodel = hiltViewModel()
-    val context = LocalContext.current
     var expanded by remember { mutableStateOf(false) }
     val categories by categoryViewmodel.allCategories.collectAsState(emptyList())
 
