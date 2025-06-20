@@ -82,7 +82,7 @@ fun MainScreen(navController: NavController) {
                 .background(BackgroundColor)
         ) {
             TitleSection(
-                "Productos en la casa"
+                "Productos en la casa", modifier = Modifier.padding(top = 15.dp, start = 10.dp)
             )
             ProductCategory(
                 categoryList,

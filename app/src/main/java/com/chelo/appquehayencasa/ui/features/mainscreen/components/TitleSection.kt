@@ -19,7 +19,7 @@ fun TitleSection(text: String, modifier: Modifier = Modifier) {
         verticalAlignment = Alignment.CenterVertically,
         modifier = modifier
             .fillMaxWidth()
-            .padding(top = 30.dp , start = 25.dp)
+
     ) {
         Text(
             text,

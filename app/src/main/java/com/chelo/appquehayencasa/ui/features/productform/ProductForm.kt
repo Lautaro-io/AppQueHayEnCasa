@@ -7,6 +7,7 @@ import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -14,6 +15,12 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DatePicker
@@ -21,12 +28,15 @@ import androidx.compose.material3.DatePickerDialog
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MenuAnchorType
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
-
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -40,14 +50,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
-
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.chelo.appquehayencasa.ui.features.mainscreen.components.TitleSection
 import com.chelo.appquehayencasa.ui.features.navigation.MainScreen
-
 import com.chelo.appquehayencasa.ui.features.productform.components.ImageContainer
 import com.chelo.appquehayencasa.ui.theme.BackgroundColor
 import com.chelo.appquehayencasa.ui.theme.BlackText
@@ -86,7 +94,21 @@ fun ProductForm(imagePath: String, navController: NavController, productId: Long
         vm.onExpireChanged(internalFormat)
     }
 
-    Scaffold { innerPadding ->
+    Scaffold(topBar = {
+        TopAppBar(
+            colors = TopAppBarDefaults.topAppBarColors(BackgroundColor),
+            title = { TitleSection("Agregar producto") },
+            navigationIcon = {
+                IconButton(onClick = { navController.navigateUp() }) {
+                    Icon(
+                        imageVector = Icons.Default.ArrowBack,
+                        contentDescription = "Volver",
+                        tint = SubcolorText
+                    )
+                }
+            }
+        )
+    }) { innerPadding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -94,7 +116,6 @@ fun ProductForm(imagePath: String, navController: NavController, productId: Long
                 .padding(innerPadding),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            TitleSection("Agregar producto")
             Spacer(modifier = Modifier.height(32.dp))
             ImageContainer(imagePath, navController)
             Spacer(modifier = Modifier.height(80.dp))
@@ -113,6 +134,7 @@ fun ProductForm(imagePath: String, navController: NavController, productId: Long
                         focusedTextColor = BlackText,
                         unfocusedTextColor = BlackText
                     ),
+                    leadingIcon = { Icon(Icons.Default.PlayArrow, contentDescription = "") },
                     shape = RoundedCornerShape(32.dp), singleLine = true
                 )
 
@@ -126,6 +148,7 @@ fun ProductForm(imagePath: String, navController: NavController, productId: Long
                         focusedTextColor = BlackText,
                         unfocusedTextColor = BlackText
                     ),
+                    leadingIcon = { Icon(Icons.Default.Info, contentDescription = "") },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                     shape = RoundedCornerShape(32.dp), singleLine = true
                 )
@@ -144,7 +167,8 @@ fun ProductForm(imagePath: String, navController: NavController, productId: Long
                         value = if (vm.category != "") vm.category else "Categoria",
                         onValueChange = { },
                         readOnly = true,
-                        placeholder = { Text("Categoria") },
+                        placeholder = { Text("Categoria", color = SubcolorText) },
+                        leadingIcon = { Icon(Icons.Default.Star, contentDescription = "str") },
                         colors = OutlinedTextFieldDefaults.colors(
                             focusedContainerColor = ColorText,
                             unfocusedContainerColor = ColorText,
@@ -168,22 +192,30 @@ fun ProductForm(imagePath: String, navController: NavController, productId: Long
 
                 Button(
                     onClick = { showDateDialog = true },
+
                     colors = ButtonDefaults.buttonColors(
                         containerColor = ColorText,
                         contentColor = BlackText
                     ),
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 64.dp),
+                        .padding(horizontal = 64.dp)
 
-                    ) {
-
-                    Text(
-                        if (vm.expireDate != "") "Vencimiento : ${vm.expireDate}" else "Fecha de vencimiento(opcional)",
+                ) {
+                    Row(
                         modifier = Modifier
-                            .padding(8.dp),
-                        fontWeight = FontWeight.Light
-                    )
+                            .fillMaxWidth()
+                            .padding(1.dp),
+                        horizontalArrangement = Arrangement.spacedBy(4.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(Icons.Default.DateRange, contentDescription = "date")
+                        Text(
+                            if (vm.expireDate != "") "Vencimiento : ${vm.expireDate}" else "Fecha de vencimiento(opcional)",
+                            fontWeight = FontWeight.Light,
+                            color = BlackText
+                        )
+                    }
 
 
                 }

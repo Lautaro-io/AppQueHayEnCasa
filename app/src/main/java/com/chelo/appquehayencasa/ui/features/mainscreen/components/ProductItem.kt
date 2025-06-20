@@ -106,8 +106,10 @@ fun ProductItem(
 
             AnimatedVisibility(expanded) {
                 Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically
+                    modifier = Modifier.fillMaxWidth()
+                        .padding(4.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceEvenly
                 ) {
 
                     Button(
@@ -118,7 +120,7 @@ fun ProductItem(
                             ColorText
                         ),
                     ) {
-                        Text("Editar producto", fontWeight = FontWeight.Bold, color = ColorText)
+                        Text("Editar", fontWeight = FontWeight.Bold, color = ColorText)
                     }
                     Button(
                         onClick =
@@ -128,7 +130,7 @@ fun ProductItem(
                             ColorText
                         )
                     ) {
-                        Text("Eliminar producto", fontWeight = FontWeight.Bold, color = ColorText)
+                        Text("Eliminar", fontWeight = FontWeight.Bold, color = ColorText)
                     }
                 }
 
