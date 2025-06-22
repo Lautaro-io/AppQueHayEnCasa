@@ -26,6 +26,7 @@ val Transparent = Color(0x00D23B1D)
 val BlackText = Color(0xFF000000)
 val DefaultCategory = Color(0xFFfcfcfc)
 val ConfirmRed = Color(0xFFFF2A00)
+val ExpireProduct = Color(0xEB5D3A33)
 
 val EditBtnColor = Color(0xFF0077BE)
 

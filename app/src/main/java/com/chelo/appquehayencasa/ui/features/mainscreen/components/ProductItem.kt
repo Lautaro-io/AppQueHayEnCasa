@@ -1,5 +1,7 @@
 package com.chelo.appquehayencasa.ui.features.mainscreen.components
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
@@ -35,16 +37,20 @@ import coil.compose.rememberAsyncImagePainter
 import com.chelo.appquehayencasa.data.entities.ProductEntity
 import com.chelo.appquehayencasa.ui.theme.AllCategory
 import com.chelo.appquehayencasa.ui.theme.AlmacenCategory
-import com.chelo.appquehayencasa.ui.theme.BackgroundColor
 import com.chelo.appquehayencasa.ui.theme.ButtonColor
 import com.chelo.appquehayencasa.ui.theme.CleanCategory
 import com.chelo.appquehayencasa.ui.theme.ColorText
 import com.chelo.appquehayencasa.ui.theme.DefaultCategory
 import com.chelo.appquehayencasa.ui.theme.EditBtnColor
+import com.chelo.appquehayencasa.ui.theme.ExpireProduct
 import com.chelo.appquehayencasa.ui.theme.MeatCategory
+import com.chelo.appquehayencasa.ui.theme.Transparent
 import java.io.File
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun ProductItem(
     product: ProductEntity,
@@ -61,12 +67,23 @@ fun ProductItem(
         else -> DefaultCategory
     }
     var scale = if (expanded) ContentScale.None else ContentScale.Crop
+    val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+    var bg = Transparent
+    var isExpired by remember { mutableStateOf(false) }
+    if (product.expireDate != "" && LocalDate.parse(
+            product.expireDate,
+            formatter
+        ) < LocalDate.now()
+    ) {
+        bg = ExpireProduct
+        isExpired = true
+    }
     Card(
         modifier = Modifier
             .padding(16.dp)
             .fillMaxWidth(),
         border = BorderStroke(1.dp, border),
-        colors = CardDefaults.cardColors(containerColor = BackgroundColor),
+        colors = CardDefaults.cardColors(containerColor = bg),
         onClick = {
             expanded = !expanded
         }
@@ -79,6 +96,7 @@ fun ProductItem(
                 .padding(16.dp)
                 .fillMaxSize()
         ) {
+            if (isExpired) RoundedComponent("PRODUCTO VENCIDO" , border)
             Image(
                 painter = rememberAsyncImagePainter(File(product.image)),
                 contentDescription = null,
@@ -106,7 +124,8 @@ fun ProductItem(
 
             AnimatedVisibility(expanded) {
                 Row(
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier
+                        .fillMaxWidth()
                         .padding(4.dp),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceEvenly
