@@ -31,11 +31,19 @@ class CheckExpireDateToNotifyUseCase @Inject constructor(private val repo: Produ
         Log.i("CHELO", "Resultado : $result")
         return result
     }
+
+    suspend fun isExpired(): Boolean {
+        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+        val today = LocalDate.now()
+
+        val products = repo.getAllProducts().first()
+
+        val result = products.any {
+            LocalDate.parse(it.expireDate, formatter) < today
+        }
+
+        return result
+    }
 }
 
 
-//.any { product ->
-//    product.expireDate?.let {
-//        val date = LocalDate.parse(it, formatter)
-//        ChronoUnit.DAYS.between(today, date) in 0..15
-//    } ?: false

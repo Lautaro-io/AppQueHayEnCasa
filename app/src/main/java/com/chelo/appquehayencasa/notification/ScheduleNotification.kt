@@ -30,11 +30,10 @@ class ScheduleNotification @Inject constructor(
     }
 
 
+
     private fun calculateDelay(): Long {
         val now = Calendar.getInstance()
-        val intervals = listOf<Int>(12,17,22)
-        intervals.forEach { hour ->
-        }
+        val intervals = listOf<Int>(13,17,22)
         val target =
             intervals.map { hour ->
                 Calendar.getInstance().apply {
@@ -53,6 +52,3 @@ class ScheduleNotification @Inject constructor(
 
 }
 
-
-//WHEY PROT TRUE MADE x 2 lbs $36.500
-//

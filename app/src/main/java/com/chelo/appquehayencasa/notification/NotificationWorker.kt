@@ -25,7 +25,7 @@ class NotificationWorker @AssistedInject constructor(
     @Assisted context: Context,
     @Assisted workerParams: WorkerParameters,
     private val checker: CheckExpireDateToNotifyUseCase,
-    private val scheduler : ScheduleNotification
+    private val scheduler: ScheduleNotification,
 ) : CoroutineWorker(context, workerParams) {
     init {
         Log.i("CHELO", "worker instanciado")
@@ -33,15 +33,28 @@ class NotificationWorker @AssistedInject constructor(
 
     override suspend fun doWork(): Result {
         createNotificationChannel()
-        Log.i("CHELO", "TRABAJANDO")
-        if (checker.checkExpire()) {
-            Log.i("CHELO", "MOSTRANDONOTIIIIIIIIIIIIIIIII")
-            showNotification()
-            scheduler.scheduleNotification()
-            return Result.success()
-        } else {
-            return Result.failure()
+
+        when {
+            checker.checkExpire() ->
+                showNotification()
+
+            checker.isExpired() ->
+                showExpiredNotification()
+
         }
+
+        scheduler.scheduleNotification()
+        return Result.success()
+
+
+
+//        if (checker.checkExpire()) {
+//            showNotification()
+//            scheduler.scheduleNotification()
+//            return Result.success()
+//        } else {
+//            return Result.failure()
+//        }
     }
 
     companion object {
@@ -62,6 +75,27 @@ class NotificationWorker @AssistedInject constructor(
         val notification = NotificationCompat.Builder(applicationContext, NOTIFICATION_CHANNEL)
             .setContentTitle("Producto en riesgo!")
             .setContentText("Tienes un producto pronto a vencer")
+            .setPriority(NotificationManager.IMPORTANCE_HIGH)
+            .setSmallIcon(R.drawable.appiconbwsvg)
+            .setContentIntent(pendingIntent)
+            .build()
+        notificationManager.notify(0, notification)
+    }
+
+    private fun showExpiredNotification() {
+        val intent = Intent(applicationContext, MainActivity::class.java)
+        val pendingIntent = PendingIntent.getActivity(
+            applicationContext,
+            0,
+            intent,
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+        )
+
+        val notificationManager =
+            applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        val notification = NotificationCompat.Builder(applicationContext, NOTIFICATION_CHANNEL)
+            .setContentTitle("Producto vencido!")
+            .setContentText("Tienes un producto vencido!")
             .setPriority(NotificationManager.IMPORTANCE_HIGH)
             .setSmallIcon(R.drawable.appiconbwsvg)
             .setContentIntent(pendingIntent)
