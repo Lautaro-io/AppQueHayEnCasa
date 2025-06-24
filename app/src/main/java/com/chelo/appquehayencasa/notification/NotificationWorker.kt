@@ -46,15 +46,6 @@ class NotificationWorker @AssistedInject constructor(
         scheduler.scheduleNotification()
         return Result.success()
 
-
-
-//        if (checker.checkExpire()) {
-//            showNotification()
-//            scheduler.scheduleNotification()
-//            return Result.success()
-//        } else {
-//            return Result.failure()
-//        }
     }
 
     companion object {
@@ -62,7 +53,9 @@ class NotificationWorker @AssistedInject constructor(
     }
 
     private fun showNotification() {
-        val intent = Intent(applicationContext, MainActivity::class.java)
+        val intent = Intent(applicationContext, MainActivity::class.java).apply{
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        }
         val pendingIntent = PendingIntent.getActivity(
             applicationContext,
             0,
@@ -78,6 +71,7 @@ class NotificationWorker @AssistedInject constructor(
             .setPriority(NotificationManager.IMPORTANCE_HIGH)
             .setSmallIcon(R.drawable.appiconbwsvg)
             .setContentIntent(pendingIntent)
+            .setAutoCancel(true)
             .build()
         notificationManager.notify(0, notification)
     }
@@ -99,6 +93,7 @@ class NotificationWorker @AssistedInject constructor(
             .setPriority(NotificationManager.IMPORTANCE_HIGH)
             .setSmallIcon(R.drawable.appiconbwsvg)
             .setContentIntent(pendingIntent)
+            .setAutoCancel(true)
             .build()
         notificationManager.notify(0, notification)
     }
