@@ -44,6 +44,10 @@ class CheckExpireDateToNotifyUseCase @Inject constructor(private val repo: Produ
 
         return result
     }
+
+    suspend fun bothNotifications() : Boolean{
+        return isExpired() && checkExpire()
+    }
 }
 
 

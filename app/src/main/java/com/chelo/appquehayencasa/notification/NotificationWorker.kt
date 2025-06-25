@@ -27,14 +27,19 @@ class NotificationWorker @AssistedInject constructor(
     private val checker: CheckExpireDateToNotifyUseCase,
     private val scheduler: ScheduleNotification,
 ) : CoroutineWorker(context, workerParams) {
-    init {
-        Log.i("CHELO", "worker instanciado")
+
+    companion object {
+        const val NOTIFICATION_CHANNEL = "NotificationChannel2"
     }
 
     override suspend fun doWork(): Result {
         createNotificationChannel()
 
         when {
+
+            checker.bothNotifications() ->
+                showBothNotification()
+
             checker.checkExpire() ->
                 showNotification()
 
@@ -48,8 +53,28 @@ class NotificationWorker @AssistedInject constructor(
 
     }
 
-    companion object {
-        const val NOTIFICATION_CHANNEL = "NotificationChannel2"
+    private fun showBothNotification() {
+        val intent = Intent(applicationContext, MainActivity::class.java).apply{
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        }
+        val pendingIntent = PendingIntent.getActivity(
+            applicationContext,
+            0,
+            intent,
+            PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
+        )
+
+        val notificationManager =
+            applicationContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        val notification = NotificationCompat.Builder(applicationContext, NOTIFICATION_CHANNEL)
+            .setContentTitle("Controla tus productos!")
+            .setContentText("Tienes productos vencidos y pronto a vencer!")
+            .setPriority(NotificationManager.IMPORTANCE_HIGH)
+            .setSmallIcon(R.drawable.appiconbwsvg)
+            .setContentIntent(pendingIntent)
+            .setAutoCancel(true)
+            .build()
+        notificationManager.notify(0, notification)
     }
 
     private fun showNotification() {
