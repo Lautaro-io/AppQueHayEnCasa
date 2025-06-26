@@ -49,6 +49,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -102,7 +104,7 @@ fun ProductForm(imagePath: String, navController: NavController, productId: Long
             navigationIcon = {
                 IconButton(onClick = { navController.navigateUp() }) {
                     Icon(
-                        painter = painterResource (R.drawable.arrowback_icon),
+                        painter = painterResource(R.drawable.arrowback_icon),
                         contentDescription = "Volver",
                         tint = SubcolorText
                     )
@@ -136,6 +138,10 @@ fun ProductForm(imagePath: String, navController: NavController, productId: Long
                         unfocusedTextColor = BlackText
                     ),
                     leadingIcon = { Icon(Icons.Default.PlayArrow, contentDescription = "") },
+                    keyboardOptions = KeyboardOptions(
+                        capitalization = KeyboardCapitalization.Sentences,
+                        imeAction = ImeAction.Done
+                    ),
                     shape = RoundedCornerShape(32.dp), singleLine = true
                 )
 
@@ -150,7 +156,12 @@ fun ProductForm(imagePath: String, navController: NavController, productId: Long
                         unfocusedTextColor = BlackText
                     ),
                     leadingIcon = { Icon(Icons.Default.Info, contentDescription = "") },
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Number,
+                        capitalization = KeyboardCapitalization.Sentences,
+                        imeAction = ImeAction.Done
+                    ),
+
                     shape = RoundedCornerShape(32.dp), singleLine = true
                 )
 
