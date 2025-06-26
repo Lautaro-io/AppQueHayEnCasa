@@ -43,7 +43,6 @@ fun CategoryDialog(
     onConfirmButton: (String, ColorObject) -> Unit,
 ) {
     var name by remember { mutableStateOf("") }
-    var expanded by remember { mutableStateOf(false) }
     var selectedColor by remember { mutableStateOf(basicColors[0]) }
     var context = LocalContext.current
 
